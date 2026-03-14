@@ -38,5 +38,6 @@ config/api_credentials.local.env
 do/
 prompts/
 PLAN.md
-docs/
+docs/*.md
+docs/datasets/
 .claude/

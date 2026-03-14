@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Outcomes — dadgap</title>
+  <script src="js/theme.js"></script>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+</head>
+<body>
+
+<header class="site-header"><div class="header-inner">
+  <a href="index.html" class="site-logo">dad<span class="logo-accent">gap</span></a>
+  <div class="header-controls">
+    <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Toggle navigation">&#9776;</button>
+    <button id="themeToggle" class="theme-toggle" onclick="dgToggle()" aria-label="Toggle theme">&#9790;</button>
+  </div>
+  <nav><ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="outcomes.html" class="active">Outcomes</a></li>
+    <li><a href="prevalence.html">Prevalence</a></li>
+    <li><a href="methods.html">Methods</a></li>
+    <li><a href="faq.html">FAQ</a></li>
+  </ul></nav>
+</div></header>
+
+<div class="content">
+
+  <h1>Adult Economic Outcomes</h1>
+  <p class="page-intro">Earnings, employment, and household income in 2021 by childhood father-presence status in the NLSY97 cohort.</p>
+
+  <!-- ── 1. Overall Gaps ───────────────────────────────────── -->
+  <section class="section">
+    <div class="section-header">
+      <h2>Overall Gaps</h2>
+      <span class="section-tag">NLSY97 2021</span>
+    </div>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Outcome</th>
+          <th class="num">Father-Present</th>
+          <th class="num">Father-Absent</th>
+          <th class="num">Gap</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Mean earnings</td>
+          <td class="num">$70,784</td>
+          <td class="num">$51,731</td>
+          <td class="num highlight">$19,053</td>
+        </tr>
+        <tr>
+          <td>Employment rate</td>
+          <td class="num">83.0%</td>
+          <td class="num">75.3%</td>
+          <td class="num highlight">7.7 pp</td>
+        </tr>
+        <tr>
+          <td>Mean HH income</td>
+          <td class="num">$121,212</td>
+          <td class="num">$80,283</td>
+          <td class="num highlight">$40,929</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ── 2. Earnings Gap by Race and Sex ───────────────────── -->
+  <section class="section">
+    <div class="section-header">
+      <h2>Earnings Gap by Race and Sex</h2>
+      <span class="section-tag">Gap = Present &minus; Absent</span>
+    </div>
+
+    <div class="chart-container">
+      <h3>Earnings Gap by Race/Sex</h3>
+      <div class="chart-canvas-wrap">
+        <canvas id="chartGapRaceSex"></canvas>
+      </div>
+    </div>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Group</th>
+          <th class="num">Father-Present</th>
+          <th class="num">Father-Absent</th>
+          <th class="num">Gap</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Black Female</td>
+          <td class="num">$53,579</td>
+          <td class="num">$43,975</td>
+          <td class="num highlight">$9,604</td>
+        </tr>
+        <tr>
+          <td>Black Male</td>
+          <td class="num">$58,497</td>
+          <td class="num">$46,339</td>
+          <td class="num highlight">$12,158</td>
+        </tr>
+        <tr>
+          <td>Hispanic Female</td>
+          <td class="num">$50,535</td>
+          <td class="num">$44,052</td>
+          <td class="num highlight">$6,483</td>
+        </tr>
+        <tr>
+          <td>Hispanic Male</td>
+          <td class="num">$66,143</td>
+          <td class="num">$57,287</td>
+          <td class="num highlight">$8,856</td>
+        </tr>
+        <tr>
+          <td>NBNH Female</td>
+          <td class="num">$65,024</td>
+          <td class="num">$47,898</td>
+          <td class="num highlight">$17,126</td>
+        </tr>
+        <tr>
+          <td>NBNH Male</td>
+          <td class="num">$89,417</td>
+          <td class="num">$69,564</td>
+          <td class="num highlight">$19,853</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="insight-box">
+      <p>The gap is widest among non-Black, non-Hispanic respondents ($17&ndash;20K) and narrowest among Hispanic females ($6.5K). This reflects both different baseline earnings levels and different prevalence of father absence across groups.</p>
+    </div>
+  </section>
+
+  <!-- ── 3. Earnings by Status and Race/Sex ────────────────── -->
+  <section class="section">
+    <div class="section-header">
+      <h2>Earnings by Status and Race/Sex</h2>
+    </div>
+
+    <div class="chart-container">
+      <h3>Mean 2021 Earnings by Father Status</h3>
+      <div class="chart-canvas-wrap">
+        <canvas id="chartEarningsGrouped"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 4. NLSY97 vs Public Benchmarks ────────────────────── -->
+  <section class="section">
+    <div class="section-header">
+      <h2>NLSY97 vs Public Benchmarks</h2>
+    </div>
+
+    <div class="chart-container">
+      <h3>Earnings Context: NLSY97 vs Public Surveys</h3>
+      <div class="chart-canvas-wrap">
+        <canvas id="chartBenchmarks"></canvas>
+      </div>
+      <p class="chart-note">NLSY97 is unweighted and cohort-specific (born 1980&ndash;84, ages 37&ndash;41). ACS/CPS are weighted population estimates for ages 25&ndash;54.</p>
+    </div>
+  </section>
+
+  <!-- ── 5. Event-Time Outcomes ────────────────────────────── -->
+  <section class="section">
+    <div class="section-header">
+      <h2>Event-Time Outcomes (Post-Exit)</h2>
+      <span class="section-tag">Preferred Specification</span>
+    </div>
+
+    <div class="chart-container">
+      <h3>Post-Father-Exit Outcomes (3+ Years Post)</h3>
+      <div class="chart-canvas-wrap">
+        <canvas id="chartEventTime"></canvas>
+      </div>
+    </div>
+
+    <div class="insight-box">
+      <p>Event-time estimates use a post-only design comparing children who experienced father exit to continuously-present controls, matched on birth year, sex, and race. These are near-term associations, not causal estimates.</p>
+    </div>
+  </section>
+
+</div>
+
+<footer class="site-footer"><div class="footer-inner"><span>dadgap &middot; MIT License</span><span>Data: NLSY97, ACS PUMS, CPS ASEC</span></div></footer>
+
+<script>
+(function () {
+  'use strict';
+
+  var charts = [];
+
+  function fmt(v) { return '$' + v.toLocaleString(); }
+
+  function buildCharts() {
+    var c = C();
+
+    charts.forEach(function (ch) { ch.destroy(); });
+    charts.length = 0;
+
+    var groups = ['Black F', 'Black M', 'Hisp F', 'Hisp M', 'NBNH F', 'NBNH M'];
+    var gaps = [9604, 12158, 6483, 8856, 17126, 19853];
+    var present = [53579, 58497, 50535, 66143, 65024, 89417];
+    var absent  = [43975, 46339, 44052, 57287, 47898, 69564];
+
+    /* ── Chart 1: Gap by Race/Sex ───────────────────────── */
+    charts.push(new Chart(document.getElementById('chartGapRaceSex'), {
+      type: 'bar',
+      data: {
+        labels: groups,
+        datasets: [{
+          label: 'Earnings Gap ($)',
+          data: gaps,
+          backgroundColor: c.palette.slice(0, 6),
+          borderRadius: 4,
+          maxBarThickness: 60
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: function (tip) { return fmt(tip.raw); } } }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: { color: c.grid },
+            ticks: { color: c.textSec, callback: function (v) { return '$' + (v / 1000) + 'K'; } }
+          },
+          x: { grid: { display: false }, ticks: { color: c.textSec } }
+        }
+      }
+    }));
+
+    /* ── Chart 2: Grouped bar — Present vs Absent ───────── */
+    charts.push(new Chart(document.getElementById('chartEarningsGrouped'), {
+      type: 'bar',
+      data: {
+        labels: groups,
+        datasets: [
+          {
+            label: 'Father-Present',
+            data: present,
+            backgroundColor: c.accent,
+            borderRadius: 4,
+            maxBarThickness: 50
+          },
+          {
+            label: 'Father-Absent',
+            data: absent,
+            backgroundColor: c.orange,
+            borderRadius: 4,
+            maxBarThickness: 50
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+          legend: { labels: { color: c.textSec, boxWidth: 14, padding: 16 } },
+          tooltip: { callbacks: { label: function (tip) { return tip.dataset.label + ': ' + fmt(tip.raw); } } }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: { color: c.grid },
+            ticks: { color: c.textSec, callback: function (v) { return '$' + (v / 1000) + 'K'; } }
+          },
+          x: { grid: { display: false }, ticks: { color: c.textSec } }
+        }
+      }
+    }));
+
+    /* ── Chart 3: Benchmarks ────────────────────────────── */
+    charts.push(new Chart(document.getElementById('chartBenchmarks'), {
+      type: 'bar',
+      data: {
+        labels: ['NLSY97 Overall', 'ACS PUMS 2024', 'CPS ASEC 2023', 'CPS ASEC 2025'],
+        datasets: [{
+          label: 'Mean Earnings ($)',
+          data: [63003, 55894, 53341, 58996],
+          backgroundColor: [c.accent, c.green, c.orange, c.teal],
+          borderRadius: 4,
+          maxBarThickness: 70
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: function (tip) { return fmt(tip.raw); } } }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: { color: c.grid },
+            ticks: { color: c.textSec, callback: function (v) { return '$' + (v / 1000) + 'K'; } }
+          },
+          x: { grid: { display: false }, ticks: { color: c.textSec } }
+        }
+      }
+    }));
+
+    /* ── Chart 4: Event-Time Horizontal Bar ─────────────── */
+    var etLabels = [
+      'Schooling months',
+      'K-12 months',
+      'College months',
+      'Any arrest',
+      'Any incarceration'
+    ];
+    var etData = [-1.25, -0.18, -1.09, 0.023, 0.012];
+    var etColors = etData.map(function (v) { return v < 0 ? c.red : c.orange; });
+
+    charts.push(new Chart(document.getElementById('chartEventTime'), {
+      type: 'bar',
+      data: {
+        labels: etLabels,
+        datasets: [{
+          label: 'Coefficient',
+          data: etData,
+          backgroundColor: etColors,
+          borderRadius: 4,
+          maxBarThickness: 28
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function (tip) {
+                var v = tip.raw;
+                return (v >= 0 ? '+' : '') + v.toFixed(3);
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: { color: c.grid },
+            ticks: { color: c.textSec }
+          },
+          y: {
+            grid: { display: false },
+            ticks: { color: c.textSec }
+          }
+        }
+      }
+    }));
+  }
+
+  dgDefaults();
+  buildCharts();
+  window.dgRebuild = function () { dgDefaults(); buildCharts(); };
+})();
+</script>
+</body>
+</html>

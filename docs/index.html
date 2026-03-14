@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>dadgap — Father Absence &amp; Adult Outcomes</title>
+  <script src="js/theme.js"></script>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+</head>
+<body>
+
+<header class="site-header"><div class="header-inner">
+  <a href="index.html" class="site-logo">dad<span class="logo-accent">gap</span></a>
+  <div class="header-controls">
+    <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Toggle navigation">&#9776;</button>
+    <button id="themeToggle" class="theme-toggle" onclick="dgToggle()" aria-label="Toggle theme">&#9790;</button>
+  </div>
+  <nav><ul class="nav-links">
+    <li><a href="index.html" class="active">Home</a></li>
+    <li><a href="outcomes.html">Outcomes</a></li>
+    <li><a href="prevalence.html">Prevalence</a></li>
+    <li><a href="methods.html">Methods</a></li>
+    <li><a href="faq.html">FAQ</a></li>
+  </ul></nav>
+</div></header>
+
+<!-- ── Hero ─────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-inner">
+    <h1>Father Absence &amp; Adult Economic Outcomes</h1>
+    <p class="subtitle">Multi-cohort analysis of associations between childhood resident biological father absence and adult earnings, employment, and household income. Primary analysis uses the NLSY97 cohort (N&nbsp;=&nbsp;8,982), with ACS and CPS public benchmarks.</p>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-value">8,982</div>
+        <div class="stat-label">NLSY97 Respondents</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">43.2%</div>
+        <div class="stat-label">Father-Absent</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">$19,053</div>
+        <div class="stat-label">Mean Earnings Gap</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">6</div>
+        <div class="stat-label">Publication Tables</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="content">
+
+  <!-- ── Key Findings ──────────────────────────────────────── -->
+  <section class="section">
+    <div class="section-header">
+      <h2>Key Findings</h2>
+    </div>
+
+    <div class="card-grid">
+      <div class="card">
+        <h3>Large earnings gap</h3>
+        <p>Father-present adults earn $70,784 on average versus $51,731 for father-absent adults&mdash;a $19,053 difference. The gap varies by race and sex: $19,853 for non-Black non-Hispanic males, $9,604 for Black females.</p>
+        <a href="outcomes.html" class="card-link">Explore outcomes</a>
+      </div>
+
+      <div class="card">
+        <h3>Prevalence varies sharply by race</h3>
+        <p>65% of Black respondents, 40% of Hispanic respondents, and 33% of non-Black non-Hispanic respondents grew up without a continuous resident biological father. ACS 2024 child data shows similar gradients.</p>
+        <a href="prevalence.html" class="card-link">View prevalence data</a>
+      </div>
+
+      <div class="card">
+        <h3>Poverty gradient</h3>
+        <p>ACS 2024: 59% of children below poverty lack a resident father versus 7.6% in the top income quartile. Father absence concentrates at the bottom of the income distribution.</p>
+        <a href="prevalence.html" class="card-link">View prevalence data</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── At a Glance Chart ─────────────────────────────────── -->
+  <section class="section">
+    <div class="section-header">
+      <h2>At a Glance</h2>
+    </div>
+
+    <div class="chart-container">
+      <h3>Mean 2021 Earnings by Father-Presence Status</h3>
+      <div class="chart-canvas-wrap">
+        <canvas id="chartGlance"></canvas>
+      </div>
+      <p class="chart-note">NLSY97, unweighted, ages 37&ndash;41 in 2021. Gap: $19,053.</p>
+    </div>
+  </section>
+
+  <!-- ── Explore ───────────────────────────────────────────── -->
+  <section class="section">
+    <div class="section-header">
+      <h2>Explore</h2>
+    </div>
+
+    <div class="card-grid">
+      <div class="card">
+        <h3>Outcomes</h3>
+        <p>Earnings, employment, and household income broken down by race, sex, and father-presence status.</p>
+        <a href="outcomes.html" class="card-link">View outcomes</a>
+      </div>
+      <div class="card">
+        <h3>Prevalence</h3>
+        <p>Father-absence rates by race, income, and data source across NLSY97, ACS, and CPS.</p>
+        <a href="prevalence.html" class="card-link">View prevalence</a>
+      </div>
+      <div class="card">
+        <h3>Methods</h3>
+        <p>Variable definitions, sample construction, and analytical approach.</p>
+        <a href="methods.html" class="card-link">View methods</a>
+      </div>
+      <div class="card">
+        <h3>FAQ</h3>
+        <p>Common questions about interpretation, causality, and data limitations.</p>
+        <a href="faq.html" class="card-link">View FAQ</a>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="site-footer"><div class="footer-inner"><span>dadgap &middot; MIT License</span><span>Data: NLSY97, ACS PUMS, CPS ASEC</span></div></footer>
+
+<script>
+(function () {
+  'use strict';
+
+  var charts = [];
+
+  function buildCharts() {
+    var c = C();
+
+    // Destroy previous instances
+    charts.forEach(function (ch) { ch.destroy(); });
+    charts.length = 0;
+
+    // At a Glance — bar chart
+    var ctx = document.getElementById('chartGlance');
+    if (!ctx) return;
+
+    charts.push(new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Father-Present', 'Father-Absent'],
+        datasets: [{
+          label: 'Mean Earnings ($)',
+          data: [70784, 51731],
+          backgroundColor: [c.accent, c.orange],
+          borderRadius: 4,
+          maxBarThickness: 80
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function (tip) {
+                return '$' + tip.raw.toLocaleString();
+              }
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: { color: c.grid },
+            ticks: {
+              color: c.textSec,
+              callback: function (v) { return '$' + (v / 1000) + 'K'; }
+            }
+          },
+          x: {
+            grid: { display: false },
+            ticks: { color: c.textSec }
+          }
+        }
+      }
+    }));
+  }
+
+  dgDefaults();
+  buildCharts();
+  window.dgRebuild = function () { dgDefaults(); buildCharts(); };
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Prevalence — dadgap</title>
+  <script src="js/theme.js"></script>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+</head>
+<body>
+
+<header class="site-header"><div class="header-inner">
+  <a href="index.html" class="site-logo">dad<span class="logo-accent">gap</span></a>
+  <div class="header-controls">
+    <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Toggle navigation">&#9776;</button>
+    <button id="themeToggle" class="theme-toggle" onclick="dgToggle()" aria-label="Toggle theme">&#9790;</button>
+  </div>
+  <nav><ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="outcomes.html">Outcomes</a></li>
+    <li><a href="prevalence.html" class="active">Prevalence</a></li>
+    <li><a href="methods.html">Methods</a></li>
+    <li><a href="faq.html">FAQ</a></li>
+  </ul></nav>
+</div></header>
+
+<div class="content">
+
+  <h1>Father-Absence Prevalence</h1>
+  <p class="page-intro">How common is childhood father absence, and who is most affected? Data from the NLSY97 cohort and ACS 2024.</p>
+
+  <!-- ── 1. NLSY97 Prevalence by Race ───────────────────────── -->
+  <section class="section">
+    <div class="section-header">
+      <h2>NLSY97 Prevalence by Race</h2>
+    </div>
+
+    <div class="chart-container">
+      <h3>Father-Absence Rate by Race (NLSY97)</h3>
+      <div class="chart-canvas-wrap">
+        <canvas id="chartRace"></canvas>
+      </div>
+      <p class="chart-note">NLSY97, unweighted. Binary indicator: did not live continuously with biological father birth through age 17.</p>
+    </div>
+  </section>
+
+  <!-- ── 2. NLSY97 Prevalence by Sex ───────────────────────── -->
+  <section class="section">
+    <div class="section-header">
+      <h2>NLSY97 Prevalence by Sex</h2>
+    </div>
+
+    <div class="card-grid">
+      <div class="card">
+        <h3>Female</h3>
+        <p style="font-size:2rem;font-weight:800;font-family:var(--font-mono);color:var(--color-heading);">45.4%</p>
+        <p>father-absent</p>
+      </div>
+      <div class="card">
+        <h3>Male</h3>
+        <p style="font-size:2rem;font-weight:800;font-family:var(--font-mono);color:var(--color-heading);">41.1%</p>
+        <p>father-absent</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 3. NLSY97 Prevalence by Parent Education ──────────── -->
+  <section class="section">
+    <div class="section-header">
+      <h2>NLSY97 Prevalence by Parent Education</h2>
+    </div>
+
+    <div class="chart-container">
+      <h3>Father-Absence by Parent Education Quartile</h3>
+      <div class="chart-canvas-wrap">
+        <canvas id="chartEdu"></canvas>
+      </div>
+      <p class="chart-note">Parent education quartiles based on highest grade completed by residential parent at baseline.</p>
+    </div>
+  </section>
+
+  <!-- ── 4. ACS 2024 Child Father-Presence ─────────────────── -->
+  <section class="section">
+    <div class="section-header">
+      <h2>ACS 2024 Child Father-Presence</h2>
+    </div>
+
+    <div class="chart-container">
+      <h3>Children Without Resident Father (ACS 2024)</h3>
+      <div class="chart-canvas-wrap">
+        <canvas id="chartAcsRace"></canvas>
+      </div>
+      <p class="chart-note">ACS PUMS 2024, children under 18. ESP-based household proxy for father presence.</p>
+    </div>
+  </section>
+
+  <!-- ── 5. ACS Poverty Gradient ───────────────────────────── -->
+  <section class="section">
+    <div class="section-header">
+      <h2>ACS Poverty Gradient</h2>
+    </div>
+
+    <div class="chart-container">
+      <h3>Father-Absence by Poverty Band (ACS 2024)</h3>
+      <div class="chart-canvas-wrap">
+        <canvas id="chartPoverty"></canvas>
+      </div>
+      <p class="chart-note">Poverty bands based on ratio of household income to federal poverty line.</p>
+    </div>
+  </section>
+
+  <!-- ── 6. ACS Income Quartile ────────────────────────────── -->
+  <section class="section">
+    <div class="section-header">
+      <h2>ACS Income Quartile</h2>
+    </div>
+
+    <div class="chart-container">
+      <h3>Father-Absence by HH Income Quartile (ACS 2024)</h3>
+      <div class="chart-canvas-wrap">
+        <canvas id="chartIncome"></canvas>
+      </div>
+      <p class="chart-note">Household income quartiles from ACS PUMS 2024, children under 18.</p>
+    </div>
+
+    <div class="insight-box">
+      <p><strong>Key finding:</strong> Father absence shows a steep income gradient: 50.5% of children in the lowest income quartile lack a resident father vs 7.6% in the highest. This 43-point gap is the single largest demographic gradient in the data.</p>
+    </div>
+  </section>
+
+  <!-- ── 7. Predictors of Father Absence ───────────────────── -->
+  <section class="section">
+    <div class="section-header">
+      <h2>Predictors of Father Absence (NLSY97)</h2>
+    </div>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Predictor</th>
+          <th class="num">Odds Ratio</th>
+          <th class="num">p-value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Non-Black non-Hispanic (vs Black)</td>
+          <td class="num">0.287</td>
+          <td class="num">&lt;1e-112</td>
+        </tr>
+        <tr>
+          <td>Hispanic (vs Black)</td>
+          <td class="num">0.361</td>
+          <td class="num">&lt;1e-55</td>
+        </tr>
+        <tr>
+          <td>Father education missing</td>
+          <td class="num">1.431</td>
+          <td class="num">&lt;1e-6</td>
+        </tr>
+        <tr>
+          <td>Birth year (centered)</td>
+          <td class="num">0.958</td>
+          <td class="num">0.007</td>
+        </tr>
+        <tr>
+          <td>Male</td>
+          <td class="num">0.843</td>
+          <td class="num">&lt;0.001</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+</div>
+
+<footer class="site-footer"><div class="footer-inner"><span>dadgap &middot; MIT License</span><span>Data: NLSY97, ACS PUMS, CPS ASEC</span></div></footer>
+
+<script>
+(function () {
+  'use strict';
+
+  var charts = [];
+
+  function buildCharts() {
+    var c = C();
+
+    charts.forEach(function (ch) { ch.destroy(); });
+    charts.length = 0;
+
+    // 1. Father-Absence Rate by Race (NLSY97)
+    var ctxRace = document.getElementById('chartRace');
+    if (ctxRace) {
+      charts.push(new Chart(ctxRace, {
+        type: 'bar',
+        data: {
+          labels: ['Black\n(n=2,334)', 'Hispanic\n(n=1,900)', 'Non-Black,\nnon-Hispanic\n(n=4,748)', 'Overall\n(n=8,982)'],
+          datasets: [{
+            label: 'Father-Absent (%)',
+            data: [65.4, 40.4, 33.4, 43.2],
+            backgroundColor: [c.palette[0], c.palette[1], c.palette[2], c.palette[5]],
+            borderRadius: 4,
+            maxBarThickness: 80
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          plugins: {
+            legend: { display: false },
+            tooltip: { callbacks: { label: function (tip) { return tip.raw + '%'; } } }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 80,
+              grid: { color: c.grid },
+              ticks: { color: c.textSec, callback: function (v) { return v + '%'; } }
+            },
+            x: { grid: { display: false }, ticks: { color: c.textSec } }
+          }
+        }
+      }));
+    }
+
+    // 3. Father-Absence by Parent Education Quartile
+    var ctxEdu = document.getElementById('chartEdu');
+    if (ctxEdu) {
+      charts.push(new Chart(ctxEdu, {
+        type: 'bar',
+        data: {
+          labels: ['Q1 (low)', 'Q2', 'Q3', 'Q4 (high)'],
+          datasets: [{
+            label: 'Father-Absent (%)',
+            data: [46.0, 45.0, 39.9, 36.6],
+            backgroundColor: [c.palette[3], c.palette[1], c.palette[2], c.palette[0]],
+            borderRadius: 4,
+            maxBarThickness: 80
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          plugins: {
+            legend: { display: false },
+            tooltip: { callbacks: { label: function (tip) { return tip.raw + '%'; } } }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 60,
+              grid: { color: c.grid },
+              ticks: { color: c.textSec, callback: function (v) { return v + '%'; } }
+            },
+            x: { grid: { display: false }, ticks: { color: c.textSec } }
+          }
+        }
+      }));
+    }
+
+    // 4. Children Without Resident Father (ACS 2024) — grouped bar
+    var ctxAcsRace = document.getElementById('chartAcsRace');
+    if (ctxAcsRace) {
+      charts.push(new Chart(ctxAcsRace, {
+        type: 'bar',
+        data: {
+          labels: ['Black', 'Hispanic', 'Non-Black,\nnon-Hispanic', 'Overall'],
+          datasets: [{
+            label: 'No Resident Father (%)',
+            data: [54.4, 32.0, 17.1, 25.6],
+            backgroundColor: [c.palette[0], c.palette[1], c.palette[2], c.palette[5]],
+            borderRadius: 4,
+            maxBarThickness: 80
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          plugins: {
+            legend: { display: false },
+            tooltip: { callbacks: { label: function (tip) { return tip.raw + '%'; } } }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 70,
+              grid: { color: c.grid },
+              ticks: { color: c.textSec, callback: function (v) { return v + '%'; } }
+            },
+            x: { grid: { display: false }, ticks: { color: c.textSec } }
+          }
+        }
+      }));
+    }
+
+    // 5. Father-Absence by Poverty Band (ACS 2024)
+    var ctxPoverty = document.getElementById('chartPoverty');
+    if (ctxPoverty) {
+      charts.push(new Chart(ctxPoverty, {
+        type: 'bar',
+        data: {
+          labels: ['Below 100%\npoverty', '100\u2013124%', '125\u2013149%', '150%+'],
+          datasets: [{
+            label: 'No Resident Father (%)',
+            data: [59.2, 43.6, 39.6, 17.1],
+            backgroundColor: [c.palette[3], c.palette[1], c.palette[4], c.palette[2]],
+            borderRadius: 4,
+            maxBarThickness: 80
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          plugins: {
+            legend: { display: false },
+            tooltip: { callbacks: { label: function (tip) { return tip.raw + '%'; } } }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 70,
+              grid: { color: c.grid },
+              ticks: { color: c.textSec, callback: function (v) { return v + '%'; } }
+            },
+            x: { grid: { display: false }, ticks: { color: c.textSec } }
+          }
+        }
+      }));
+    }
+
+    // 6. Father-Absence by HH Income Quartile (ACS 2024)
+    var ctxIncome = document.getElementById('chartIncome');
+    if (ctxIncome) {
+      charts.push(new Chart(ctxIncome, {
+        type: 'bar',
+        data: {
+          labels: ['Q1 (lowest)', 'Q2', 'Q3', 'Q4 (highest)'],
+          datasets: [{
+            label: 'No Resident Father (%)',
+            data: [50.5, 23.9, 13.7, 7.6],
+            backgroundColor: [c.palette[3], c.palette[1], c.palette[2], c.palette[0]],
+            borderRadius: 4,
+            maxBarThickness: 80
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          plugins: {
+            legend: { display: false },
+            tooltip: { callbacks: { label: function (tip) { return tip.raw + '%'; } } }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 60,
+              grid: { color: c.grid },
+              ticks: { color: c.textSec, callback: function (v) { return v + '%'; } }
+            },
+            x: { grid: { display: false }, ticks: { color: c.textSec } }
+          }
+        }
+      }));
+    }
+  }
+
+  dgDefaults();
+  buildCharts();
+  window.dgRebuild = function () { dgDefaults(); buildCharts(); };
+})();
+</script>
+</body>
+</html>

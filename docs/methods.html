@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Methods — dadgap</title>
+  <script src="js/theme.js"></script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header"><div class="header-inner">
+  <a href="index.html" class="site-logo">dad<span class="logo-accent">gap</span></a>
+  <div class="header-controls">
+    <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Toggle navigation">&#9776;</button>
+    <button id="themeToggle" class="theme-toggle" onclick="dgToggle()" aria-label="Toggle theme">&#9790;</button>
+  </div>
+  <nav><ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="outcomes.html">Outcomes</a></li>
+    <li><a href="prevalence.html">Prevalence</a></li>
+    <li><a href="methods.html" class="active">Methods</a></li>
+    <li><a href="faq.html">FAQ</a></li>
+  </ul></nav>
+</div></header>
+
+<div class="content">
+
+  <h1>Methodology</h1>
+  <p class="page-intro">Data sources, definitions, and analysis approach.</p>
+
+  <!-- ── 1. Definition of Father Absence ───────────────────── -->
+  <section class="section">
+    <div class="section-header">
+      <h2>Definition of Father Absence</h2>
+    </div>
+
+    <ul>
+      <li><strong>Binary indicator:</strong> did not live continuously with biological father from birth through age 17.</li>
+      <li>Coded from NLSY97 retrospective household composition roster.</li>
+      <li>8 mutually exclusive categories: always-resident, absent-from-birth, early exit (0&ndash;5), middle exit (6&ndash;11), adolescent exit (12&ndash;17), intermittent, deceased, other/unknown.</li>
+      <li>Primary analysis uses binary (any absence vs continuous presence).</li>
+    </ul>
+  </section>
+
+  <!-- ── 2. Data Sources ───────────────────────────────────── -->
+  <section class="section">
+    <div class="section-header">
+      <h2>Data Sources</h2>
+    </div>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Source</th>
+          <th>Role</th>
+          <th class="num">N</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>NLSY97</td>
+          <td>Primary cohort</td>
+          <td class="num">8,982</td>
+          <td>Born 1980&ndash;84, 20 survey waves</td>
+        </tr>
+        <tr>
+          <td>ACS PUMS 2024</td>
+          <td>Child prevalence benchmark</td>
+          <td class="num">596,271</td>
+          <td>Current living arrangements</td>
+        </tr>
+        <tr>
+          <td>CPS ASEC 2023&ndash;25</td>
+          <td>Adult earnings benchmark</td>
+          <td class="num">&mdash;</td>
+          <td>Weighted population estimates</td>
+        </tr>
+        <tr>
+          <td>SIPP 2023</td>
+          <td>Monthly earnings context</td>
+          <td class="num">&mdash;</td>
+          <td>Monthly vs annual comparison</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ── 3. Outcome Measures ───────────────────────────────── -->
+  <section class="section">
+    <div class="section-header">
+      <h2>Outcome Measures</h2>
+    </div>
+
+    <ul>
+      <li>Annual earnings (2021)</li>
+      <li>Employment status (2021)</li>
+      <li>Household income (2021)</li>
+    </ul>
+  </section>
+
+  <!-- ── 4. Identification Hierarchy ───────────────────────── -->
+  <section class="section">
+    <div class="section-header">
+      <h2>Identification Hierarchy</h2>
+    </div>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Tier</th>
+          <th>Approach</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Descriptive</td>
+          <td>Survey-weighted means, group contrasts</td>
+          <td>Complete</td>
+        </tr>
+        <tr>
+          <td>Adjusted association</td>
+          <td>OLS/GLM with pre-exposure covariates</td>
+          <td>Complete</td>
+        </tr>
+        <tr>
+          <td>Quasi-causal</td>
+          <td>Event-time post-only, sibling FE, IPW</td>
+          <td>Event-time complete; sibling FE insufficient</td>
+        </tr>
+        <tr>
+          <td>Exploratory ML</td>
+          <td>Elastic net, random forest, feature importance</td>
+          <td>Complete</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ── 5. Pre-Exposure Covariates ────────────────────────── -->
+  <section class="section">
+    <div class="section-header">
+      <h2>Pre-Exposure Covariates</h2>
+    </div>
+
+    <ul>
+      <li>Child sex</li>
+      <li>Race/ethnicity</li>
+      <li>Maternal age</li>
+      <li>Maternal education</li>
+      <li>Baseline household income</li>
+      <li>Birth order</li>
+      <li>Sibship size</li>
+      <li>Region</li>
+      <li>Maternal employment</li>
+      <li>Maternal cognitive proxies (AFQT)</li>
+    </ul>
+  </section>
+
+  <!-- ── 6. Limitations ────────────────────────────────────── -->
+  <section class="section">
+    <div class="section-header">
+      <h2>Limitations</h2>
+    </div>
+
+    <div class="warning-box">
+      <p>These limitations should be considered when interpreting any results from this analysis.</p>
+    </div>
+
+    <ul>
+      <li>NLSY97 is unweighted; cohort-specific (born 1980&ndash;84).</li>
+      <li>Father absence is association, not proven causal.</li>
+      <li>ACS uses ESP-based proxy (current household), not full childhood history.</li>
+      <li>Sibling FE design lacks sufficient within-family variation.</li>
+      <li>Single-jurisdiction parole data for event-time design.</li>
+    </ul>
+  </section>
+
+</div>
+
+<footer class="site-footer"><div class="footer-inner"><span>dadgap &middot; MIT License</span><span>Data: NLSY97, ACS PUMS, CPS ASEC</span></div></footer>
+
+</body>
+</html>

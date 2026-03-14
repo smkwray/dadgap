@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>FAQ — dadgap</title>
+  <script src="js/theme.js"></script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header"><div class="header-inner">
+  <a href="index.html" class="site-logo">dad<span class="logo-accent">gap</span></a>
+  <div class="header-controls">
+    <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Toggle navigation">&#9776;</button>
+    <button id="themeToggle" class="theme-toggle" onclick="dgToggle()" aria-label="Toggle theme">&#9790;</button>
+  </div>
+  <nav><ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="outcomes.html">Outcomes</a></li>
+    <li><a href="prevalence.html">Prevalence</a></li>
+    <li><a href="methods.html">Methods</a></li>
+    <li><a href="faq.html" class="active">FAQ</a></li>
+  </ul></nav>
+</div></header>
+
+<div class="content">
+
+  <h1>Frequently Asked Questions</h1>
+  <p class="page-intro">Common questions about the data, definitions, and interpretation.</p>
+
+  <section class="section">
+
+    <!-- Q1 — open by default -->
+    <div class="faq-item open">
+      <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+        What does &ldquo;father-absent&rdquo; mean here?
+      </button>
+      <div class="faq-answer"><div class="faq-answer-inner">
+        <p>Did not live continuously with biological father from birth through age 17. This is coded from retrospective household composition data in the NLSY97, which records who lived in the respondent's household at each age from birth onward.</p>
+      </div></div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="faq-item">
+      <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+        How common is father absence?
+      </button>
+      <div class="faq-answer"><div class="faq-answer-inner">
+        <p>43.2% of respondents in the NLSY97 cohort (born 1980&ndash;84) experienced father absence by this definition. In ACS 2024 data on current children under 18, 25.6% lack a resident father. The difference reflects both cohort changes and measurement differences (retrospective full-childhood history vs current household snapshot).</p>
+      </div></div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="faq-item">
+      <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+        How big is the earnings gap?
+      </button>
+      <div class="faq-answer"><div class="faq-answer-inner">
+        <p>Father-present adults earn $70,784 on average versus $51,731 for father-absent adults&mdash;a $19,053 gap (NLSY97, 2021 earnings, ages 37&ndash;41). The gap varies by subgroup, ranging from $6,500 (Hispanic females) to $19,900 (non-Black non-Hispanic males).</p>
+      </div></div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="faq-item">
+      <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+        Is father absence the cause of lower earnings?
+      </button>
+      <div class="faq-answer"><div class="faq-answer-inner">
+        <p>This analysis documents associations, not proven causal effects. Father absence correlates with many other disadvantages&mdash;poverty, lower maternal education, neighborhood quality&mdash;that independently affect adult outcomes. The event-time design provides stronger evidence by comparing post-exit outcomes for children who experienced father departure at a specific age to matched controls, but it is still observational.</p>
+      </div></div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="faq-item">
+      <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+        Why use NLSY97?
+      </button>
+      <div class="faq-answer"><div class="faq-answer-inner">
+        <p>The NLSY97 provides detailed retrospective household composition from birth through age 17, linked to adult outcomes measured 20+ years later. The longitudinal design enables tracking from childhood exposure to adult economic outcomes in a way that cross-sectional surveys cannot.</p>
+      </div></div>
+    </div>
+
+    <!-- Q6 -->
+    <div class="faq-item">
+      <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+        How does this compare to national data?
+      </button>
+      <div class="faq-answer"><div class="faq-answer-inner">
+        <p>NLSY97 mean earnings ($63,003) are higher than ACS ($55,894) and CPS ($53,341) estimates for similar ages. The NLSY97 is unweighted and cohort-specific; national surveys are weighted population estimates. See the <a href="methods.html">Methods</a> page for details on each data source.</p>
+      </div></div>
+    </div>
+
+    <!-- Q7 -->
+    <div class="faq-item">
+      <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+        What is the event-time design?
+      </button>
+      <div class="faq-answer"><div class="faq-answer-inner">
+        <p>The event-time design compares children who experienced father exit at a specific age to continuously-present controls, matched on birth year, sex, and race. Post-exit outcomes (schooling, arrests) are measured 3+ years after the event, reducing concerns about reverse causality.</p>
+      </div></div>
+    </div>
+
+    <!-- Q8 -->
+    <div class="faq-item">
+      <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+        Is the code open source?
+      </button>
+      <div class="faq-answer"><div class="faq-answer-inner">
+        <p>Yes, the project is released under the MIT License. Raw NLSY data requires NLS Investigator access from the Bureau of Labor Statistics; ACS PUMS and CPS ASEC data are publicly downloadable from the Census Bureau.</p>
+      </div></div>
+    </div>
+
+  </section>
+
+</div>
+
+<footer class="site-footer"><div class="footer-inner"><span>dadgap &middot; MIT License</span><span>Data: NLSY97, ACS PUMS, CPS ASEC</span></div></footer>
+
+</body>
+</html>
