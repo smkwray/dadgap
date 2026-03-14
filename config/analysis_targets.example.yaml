@@ -1,0 +1,51 @@
+exposure_targets:
+  primary:
+    name: resident_bio_father_absence_trajectory
+    age_window: [0, 17]
+    categories:
+      - always_resident_bio_father_0_17
+      - absent_from_birth_bio_father
+      - early_exit_age_0_5
+      - middle_exit_age_6_11
+      - late_exit_age_12_17
+      - intermittent_or_multiple_transitions
+      - father_deceased
+      - other_absence_reason_or_unknown
+  secondary:
+    - years_with_resident_bio_father
+    - age_at_first_exit
+    - nonresident_father_contact
+    - stepfather_or_social_father_present
+
+outcome_targets:
+  primary:
+    - annual_earnings
+    - log_earnings
+    - employment_any
+    - household_income
+    - wealth_networth
+    - college_completion
+  secondary:
+    - occupation
+    - homeownership
+    - poverty_status
+    - public_assistance
+    - family_formation
+    - incarceration_or_justice_contact
+    - physical_health
+    - mental_health
+
+quasi_causal_modules:
+  - sibling_fixed_effects
+  - cousin_or_family_cluster_models
+  - event_time_father_exit
+  - doubly_robust_adjustment
+  - attrition_ipw
+
+ml_modules:
+  - elastic_net
+  - random_forest
+  - gradient_boosting
+  - double_ml
+  - causal_forest
+  - trajectory_clustering

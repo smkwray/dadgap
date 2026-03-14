@@ -1,0 +1,19 @@
+dataset,logical_name,candidate_variable,source_file,required,notes
+psid_main,person_id,,psid_main,yes,PSID person identifier
+psid_main,family_id,,psid_main,yes,PSID family identifier
+psid_main,wave_year,,psid_main,yes,Interview year
+psid_main,relationship_to_head,,psid_main,yes,Household structure
+psid_main,household_income,,psid_main,yes,Family income
+psid_main,earnings,,psid_main,yes,Individual earnings
+psid_main,wealth,,psid_main,no,If using main PSID wealth items
+psid_shelf,person_id,,psid_shelf,yes,Link to PSID main
+psid_shelf,wave_year,,psid_shelf,yes,Harmonized year
+psid_shelf,earnings,,psid_shelf,yes,Harmonized earnings
+psid_shelf,family_income,,psid_shelf,yes,Harmonized family income
+psid_shelf,wealth,,psid_shelf,yes,Harmonized wealth
+psid_parent_id,child_person_id,,parent_identification,yes,Child ID
+psid_parent_id,mother_person_id,,parent_identification,yes,Mother ID
+psid_parent_id,father_person_id,,parent_identification,yes,Father ID
+psid_history,marriage_start_end,,marriage_history,no,Marriage timing
+psid_history,birth_history,,childbirth_history,no,Childbirth timing
+psid_main,sample_weight,,psid_main,yes,Use cohort/year-appropriate weight

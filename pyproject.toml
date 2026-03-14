@@ -1,0 +1,62 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fatherlessness-longrun-public-data"
+version = "0.1.0"
+description = "Scaffold for a multi-cohort public-data study of resident biological father absence and adult economic outcomes."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "pandas>=2.2",
+  "numpy>=1.26",
+  "pyarrow>=15.0",
+  "pyyaml>=6.0",
+  "typer>=0.12",
+  "rich>=13.7",
+]
+
+[project.optional-dependencies]
+analysis = [
+  "statsmodels>=0.14",
+  "linearmodels>=6.0",
+  "scikit-learn>=1.5",
+  "duckdb>=1.0",
+  "pyreadstat>=1.2",
+  "lifelines>=0.30",
+  "matplotlib>=3.8",
+]
+ml = [
+  "statsmodels>=0.14",
+  "linearmodels>=6.0",
+  "scikit-learn>=1.5",
+  "duckdb>=1.0",
+  "pyreadstat>=1.2",
+  "lifelines>=0.30",
+  "matplotlib>=3.8",
+  "xgboost>=2.0",
+  "lightgbm>=4.3",
+  "doubleml>=0.8",
+  "econml>=0.15",
+  "shap>=0.46",
+]
+dev = [
+  "pytest>=8.0",
+  "ruff>=0.5",
+  "mypy>=1.10",
+]
+
+[project.scripts]
+father-longrun = "father_longrun.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = "-p no:cacheprovider"

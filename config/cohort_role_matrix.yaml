@@ -1,0 +1,76 @@
+cohorts:
+  nlsy79_main:
+    tier: core
+    role:
+      - maternal_history
+      - prebirth_covariates
+      - household_context
+    first_pass: true
+  nlsy79_child:
+    tier: core
+    role:
+      - father_presence
+      - child_outcomes
+      - child_context
+    first_pass: true
+  nlsy79_young_adult:
+    tier: core
+    role:
+      - adult_outcomes
+      - early_to_mid_adult_followup
+    first_pass: true
+  nlsy97:
+    tier: core
+    role:
+      - replication
+      - adult_earnings
+      - adult_employment
+    first_pass: true
+  psid_main:
+    tier: core
+    role:
+      - multigenerational_panel
+      - long_run_income
+      - family_structure
+    first_pass: false
+  psid_shelf:
+    tier: core
+    role:
+      - harmonized_income
+      - wealth
+      - long_run_adult_outcomes
+    first_pass: false
+  add_health_public:
+    tier: secondary
+    role:
+      - adult_replication
+      - heterogeneity
+      - mechanisms
+    first_pass: false
+  ffcws_public:
+    tier: secondary
+    role:
+      - early_adult_replication
+      - father_involvement
+      - urban_family_instability
+    first_pass: false
+  acs_pums:
+    tier: benchmark
+    role:
+      - prevalence
+      - subgroup_context
+      - calibration
+    first_pass: false
+  cps_asec:
+    tier: benchmark
+    role:
+      - income_poverty_benchmark
+      - official_benchmark
+    first_pass: false
+  sipp:
+    tier: benchmark
+    role:
+      - short_run_event_study
+      - household_income_dynamics
+      - transfer_receipt
+    first_pass: false

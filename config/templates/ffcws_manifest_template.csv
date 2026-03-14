@@ -1,0 +1,8 @@
+dataset,logical_name,candidate_variable,source_file,required,notes
+ffcws,family_id,,ffcws,yes,Family identifier
+ffcws,child_id,,ffcws,yes,Focal child identifier
+ffcws,wave_or_child_age,,ffcws,yes,"Birth, 1, 3, 5, 9, 15, 22"
+ffcws,father_relationship_status,,ffcws,yes,Mother-father union status
+ffcws,father_contact,,ffcws,no,Nonresident father involvement
+ffcws,adult_or_near_adult_outcome,,ffcws,yes,Education / employment / earnings-adjacent
+ffcws,sample_weight,,ffcws,yes,Use public weights appropriately

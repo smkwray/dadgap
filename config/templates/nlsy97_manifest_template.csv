@@ -1,0 +1,10 @@
+dataset,logical_name,candidate_variable,source_file,required,notes
+nlsy97,respondent_id,,nlsy97,yes,NLSY97 ID
+nlsy97,survey_round_or_year,,nlsy97,yes,Round/year
+nlsy97,household_roster_father_presence,,nlsy97,yes,Need exposure construction
+nlsy97,parent_characteristics,,nlsy97,no,Parent education/income background
+nlsy97,adult_earnings,,nlsy97,yes,Gross wage/salary
+nlsy97,adult_employment,,nlsy97,yes,Employment status
+nlsy97,adult_household_income,,nlsy97,no,Household or total income
+nlsy97,education_attainment,,nlsy97,yes,Adult schooling
+nlsy97,sample_weight,,nlsy97,yes,Appropriate round weight

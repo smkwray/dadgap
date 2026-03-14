@@ -1,0 +1,127 @@
+project:
+  project_name: fatherlessness_longrun_public_data
+  first_milestone: nlsy_only_pilot
+  notes: |
+    Replace all placeholder paths with absolute local paths.
+    Do not guess variable names from prior projects.
+
+paths:
+  data_root: /ABSOLUTE/PATH/TO/data
+  raw_root: ./data/raw
+  external_root: ./data/external
+  interim_root: ./data/interim
+  processed_root: ./data/processed
+  outputs_root: ./outputs
+  cache_root: /ABSOLUTE/PATH/TO/external_cache
+
+environment:
+  os: linux_or_macos_or_windows
+  python_version: "3.11"
+  use_gpu_for_ml_if_available: false
+
+nlsy:
+  user_has_local_copy: true
+  fallback_interim_root: /ABSOLUTE/PATH/TO/existing_nlsy_interim_dir
+  nlsy79_main_path: /ABSOLUTE/PATH/TO/NLSY79_MAIN.dta
+  nlsy79_child_path: /ABSOLUTE/PATH/TO/NLSY79_CHILD.dta
+  nlsy79_young_adult_path: /ABSOLUTE/PATH/TO/NLSY79_YA.dta
+  nlsy97_path: /ABSOLUTE/PATH/TO/NLSY97.dta
+  codebooks_dir: /ABSOLUTE/PATH/TO/NLSY/codebooks
+  prior_project_scripts_dir: /OPTIONAL/PATH/TO/old_project_scripts
+  file_format_notes: "stata, csv, sav, or mixed"
+  extract_provenance:
+    nlsy79_main: raw_investigator_export_or_prior_clean_merge
+    nlsy79_child: raw_investigator_export_or_prior_clean_merge
+    nlsy79_young_adult: raw_investigator_export_or_prior_clean_merge
+    nlsy97: raw_investigator_export_or_prior_clean_merge
+  ids_present:
+    respondent_id: unknown_fill_me
+    mother_id: unknown_fill_me
+    child_id: unknown_fill_me
+    family_id: unknown_fill_me
+    survey_round_or_year: unknown_fill_me
+
+psid:
+  download_or_register_now: true
+  registration_complete: false
+  psid_main_dir: /ABSOLUTE/PATH/TO/PSID/main
+  psid_shelf_path: /ABSOLUTE/PATH/TO/PSID/psid_shelf.dta
+  parent_identification_path: /ABSOLUTE/PATH/TO/PSID/parent_identification.dta
+  childbirth_adoption_history_path: /ABSOLUTE/PATH/TO/PSID/childbirth_history.dta
+  marriage_history_path: /ABSOLUTE/PATH/TO/PSID/marriage_history.dta
+  cds_path: /OPTIONAL/PATH/TO/PSID/cds.dta
+  tas_path: /OPTIONAL/PATH/TO/PSID/tas.dta
+
+add_health:
+  use_public_data: true
+  add_health_dir: /ABSOLUTE/PATH/TO/add_health_public
+  wave_manifest_notes: "List which public-use waves you downloaded."
+
+ffcws:
+  use_public_data: true
+  ffcws_dir: /ABSOLUTE/PATH/TO/ffcws_public
+
+benchmarks:
+  acs_pums_dir: /ABSOLUTE/PATH/TO/acs_pums
+  cps_asec_dir: /ABSOLUTE/PATH/TO/cps_asec
+  sipp_dir: /ABSOLUTE/PATH/TO/sipp
+  census:
+    - dataset: 2024/acs/acs5
+      canonical_name: acs5_state_context_2024
+      geography: state:*
+      variables:
+        - NAME
+        - B19013_001E
+        - B17001_001E
+        - B17001_002E
+        - B23025_003E
+        - B23025_005E
+        - B15003_001E
+        - B15003_022E
+        - B15003_023E
+        - B15003_024E
+        - B15003_025E
+  ipums_extracts:
+    - collection: cps
+      description: dadgap_cps_asec_benchmark
+      submit: false
+      samples:
+        - cps2023_03s
+        - cps2024_03s
+        - cps2025_03s
+      variables:
+        - AGE
+        - SEX
+        - RACE
+        - HISPAN
+        - STATEFIP
+        - EDUC
+        - EMPSTAT
+        - LABFORCE
+        - INCWAGE
+        - INCTOT
+        - POVERTY
+        - FAMSIZE
+        - MARST
+        - RELATE
+
+analysis:
+  primary_exposure_family: resident_bio_father_absence
+  primary_exposure_variant: trajectory_0_17
+  primary_outcomes:
+    - log_annual_earnings
+    - employment_any
+    - educational_attainment
+    - household_income
+    - wealth_networth
+  preferred_age_windows:
+    primary: [30, 40]
+    fallback: [25, 29]
+    near_adult: [22, 24]
+  model_priority:
+    - survey_weighted_association
+    - sibling_fixed_effects
+    - event_study
+    - double_ml
+    - causal_forest
+  report_style: neutral_descriptive

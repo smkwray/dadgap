@@ -1,0 +1,8 @@
+dataset,logical_name,candidate_variable,source_file,required,notes
+add_health,respondent_id,,add_health,yes,Public-use respondent ID
+add_health,wave,,add_health,yes,Wave number
+add_health,father_residence_or_structure,,add_health,yes,Family structure / father presence
+add_health,adult_employment,,add_health,yes,Adult labor market status
+add_health,adult_income,,add_health,no,If public-use available in selected wave
+add_health,education_attainment,,add_health,yes,Highest degree
+add_health,sample_weight,,add_health,yes,Wave-appropriate weight

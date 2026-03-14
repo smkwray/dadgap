@@ -1,0 +1,24 @@
+dataset,logical_name,candidate_variable,source_file,required,notes
+nlsy79_main,respondent_id,,nlsy79_main,yes,Main youth respondent ID
+nlsy79_main,survey_year,,nlsy79_main,yes,Interview year or round
+nlsy79_main,maternal_education,,nlsy79_main,yes,Prefer pre-exposure timing
+nlsy79_main,maternal_marital_status,,nlsy79_main,yes,At or near child birth / survey year
+nlsy79_main,household_income,,nlsy79_main,yes,Total net family income if available
+nlsy79_main,poverty_status,,nlsy79_main,no,Use if available
+nlsy79_child,child_id,,nlsy79_child,yes,Child identifier
+nlsy79_child,mother_id,,nlsy79_child,yes,Link back to NLSY79 mother
+nlsy79_child,child_birth_year,,nlsy79_child,yes,For exposure timing
+nlsy79_child,father_present_household,,nlsy79_child,yes,Constructed father presence variable
+nlsy79_child,father_alive,,nlsy79_child,no,Separate death from other absence
+nlsy79_child,father_distance,,nlsy79_child,no,Nonresident father proximity
+nlsy79_child,nonresident_contact,,nlsy79_child,no,Visits/contact if available
+nlsy79_child,stepfather_present,,nlsy79_child,no,Keep separate from bio father
+nlsy79_child,child_weight,,nlsy79_child,no,Use if needed
+nlsy79_ya,young_adult_id,,nlsy79_ya,yes,Young adult respondent ID
+nlsy79_ya,child_id,,nlsy79_ya,yes,Link back to child file
+nlsy79_ya,adult_earnings,,nlsy79_ya,yes,Annual own earnings
+nlsy79_ya,employment_any,,nlsy79_ya,yes,Any employment
+nlsy79_ya,hours_or_weeks_worked,,nlsy79_ya,no,Labor supply
+nlsy79_ya,education_attainment,,nlsy79_ya,yes,Highest grade/degree
+nlsy79_ya,household_income,,nlsy79_ya,no,Adult household income
+nlsy79_ya,sample_weight,,nlsy79_ya,yes,Longitudinal or cross-sectional as appropriate
