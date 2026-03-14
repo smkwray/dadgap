@@ -29,8 +29,8 @@
 <!-- ── Hero ─────────────────────────────────────────────── -->
 <section class="hero">
   <div class="hero-inner">
-    <h1>Father Absence &amp; Adult Economic Outcomes</h1>
-    <p class="subtitle">Multi-cohort analysis of associations between childhood resident biological father absence and adult earnings, employment, and household income. Primary analysis uses the NLSY97 cohort (N&nbsp;=&nbsp;8,982), with ACS and CPS public benchmarks.</p>
+    <h1>Father Absence &amp; Adult Outcomes</h1>
+    <p class="subtitle">Multi-cohort analysis of associations between childhood resident biological father absence and adult outcomes across cognition, education, earnings, employment, health, mental health, and family formation. Primary analysis uses the NLSY97 cohort (N&nbsp;=&nbsp;8,982).</p>
 
     <div class="stats-row">
       <div class="stat-card">
@@ -43,11 +43,11 @@
       </div>
       <div class="stat-card">
         <div class="stat-value">$19,053</div>
-        <div class="stat-label">Mean Earnings Gap</div>
+        <div class="stat-label">Earnings Gap</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value">6</div>
-        <div class="stat-label">Publication Tables</div>
+        <div class="stat-value">-0.19 SD</div>
+        <div class="stat-label">Adjusted g Gap</div>
       </div>
     </div>
   </div>
@@ -63,20 +63,20 @@
 
     <div class="card-grid">
       <div class="card">
-        <h3>Large earnings gap</h3>
-        <p>Father-present adults earn $70,784 on average versus $51,731 for father-absent adults&mdash;a $19,053 difference. The gap varies by race and sex: $19,853 for non-Black non-Hispanic males, $9,604 for Black females.</p>
+        <h3>Cognitive &amp; education gaps persist after adjustment</h3>
+        <p>Father-absent respondents score 0.37 SD lower on g_proxy; 0.19 SD persists after covariate adjustment. Education gap: 1.3 years raw, 1.2 years adjusted.</p>
         <a href="outcomes.html" class="card-link">Explore outcomes</a>
       </div>
 
       <div class="card">
-        <h3>Prevalence varies sharply by race</h3>
-        <p>65% of Black respondents, 40% of Hispanic respondents, and 33% of non-Black non-Hispanic respondents grew up without a continuous resident biological father. ACS 2024 child data shows similar gradients.</p>
-        <a href="prevalence.html" class="card-link">View prevalence data</a>
+        <h3>Earnings gap varies by race</h3>
+        <p>Overall $19,053 gap. Largest for non-Black non-Hispanic males ($19,853), smallest for Hispanic females ($6,483). Employment gap: 7.7 pp.</p>
+        <a href="outcomes.html" class="card-link">Explore outcomes</a>
       </div>
 
       <div class="card">
-        <h3>Poverty gradient</h3>
-        <p>ACS 2024: 59% of children below poverty lack a resident father versus 7.6% in the top income quartile. Father absence concentrates at the bottom of the income distribution.</p>
+        <h3>Steep poverty gradient</h3>
+        <p>ACS 2024: 59% of children below poverty lack a resident father vs 7.6% in the top income quartile. Father absence concentrates at the bottom of the income distribution.</p>
         <a href="prevalence.html" class="card-link">View prevalence data</a>
       </div>
     </div>
@@ -89,11 +89,11 @@
     </div>
 
     <div class="chart-container">
-      <h3>Mean 2021 Earnings by Father-Presence Status</h3>
+      <h3>Adjusted Father-Absence Gaps</h3>
       <div class="chart-canvas-wrap">
         <canvas id="chartGlance"></canvas>
       </div>
-      <p class="chart-note">NLSY97, unweighted, ages 37&ndash;41 in 2021. Gap: $19,053.</p>
+      <p class="chart-note">NLSY97, adjusted coefficients from OLS/LPM regressions controlling for race, sex, birth year, region, parent education, and household composition.</p>
     </div>
   </section>
 
@@ -106,12 +106,12 @@
     <div class="card-grid">
       <div class="card">
         <h3>Outcomes</h3>
-        <p>Earnings, employment, and household income broken down by race, sex, and father-presence status.</p>
+        <p>Cognition, education, earnings, employment, health, mental health, and family formation by father-presence status.</p>
         <a href="outcomes.html" class="card-link">View outcomes</a>
       </div>
       <div class="card">
         <h3>Prevalence</h3>
-        <p>Father-absence rates by race, income, and data source across NLSY97, ACS, and CPS.</p>
+        <p>Father-absence rates and effect heterogeneity by race, sex, income, and data source across NLSY97 and ACS.</p>
         <a href="prevalence.html" class="card-link">View prevalence</a>
       </div>
       <div class="card">
@@ -144,23 +144,27 @@
     charts.forEach(function (ch) { ch.destroy(); });
     charts.length = 0;
 
-    // At a Glance — bar chart
+    // At a Glance — horizontal bar of adjusted coefficients
     var ctx = document.getElementById('chartGlance');
     if (!ctx) return;
+
+    var labels = ['g_proxy (SD)', 'Education (years)', 'Poor health (share)', 'CES-D (score)', 'Ever married (share)'];
+    var values = [-0.193, -1.160, 0.059, 0.788, -0.048];
 
     charts.push(new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: ['Father-Present', 'Father-Absent'],
+        labels: labels,
         datasets: [{
-          label: 'Mean Earnings ($)',
-          data: [70784, 51731],
-          backgroundColor: [c.accent, c.orange],
+          label: 'Adjusted coefficient',
+          data: values,
+          backgroundColor: c.accent,
           borderRadius: 4,
-          maxBarThickness: 80
+          maxBarThickness: 40
         }]
       },
       options: {
+        indexAxis: 'y',
         responsive: true,
         maintainAspectRatio: true,
         plugins: {
@@ -168,21 +172,18 @@
           tooltip: {
             callbacks: {
               label: function (tip) {
-                return '$' + tip.raw.toLocaleString();
+                var v = tip.raw;
+                return v >= 0 ? '+' + v.toFixed(3) : v.toFixed(3);
               }
             }
           }
         },
         scales: {
-          y: {
-            beginAtZero: true,
-            grid: { color: c.grid },
-            ticks: {
-              color: c.textSec,
-              callback: function (v) { return '$' + (v / 1000) + 'K'; }
-            }
-          },
           x: {
+            grid: { color: c.grid },
+            ticks: { color: c.textSec }
+          },
+          y: {
             grid: { display: false },
             ticks: { color: c.textSec }
           }

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
-  <title>Prevalence — dadgap</title>
+  <title>Prevalence &amp; Heterogeneity — dadgap</title>
   <script src="js/theme.js"></script>
   <link rel="stylesheet" href="css/style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
@@ -28,8 +28,8 @@
 
 <div class="content">
 
-  <h1>Father-Absence Prevalence</h1>
-  <p class="page-intro">How common is childhood father absence, and who is most affected? Data from the NLSY97 cohort and ACS 2024.</p>
+  <h1>Father-Absence Prevalence &amp; Effect Heterogeneity</h1>
+  <p class="page-intro">How common is childhood father absence, who is most affected, and how do the associated outcome gaps vary across demographic subgroups? Data from the NLSY97 cohort and ACS 2024.</p>
 
   <!-- ── 1. NLSY97 Prevalence by Race ───────────────────────── -->
   <section class="section">
@@ -172,6 +172,119 @@
         </tr>
       </tbody>
     </table>
+  </section>
+
+  <!-- ── 8. Effect Heterogeneity by Subgroup ───────────────── -->
+  <section class="section">
+    <div class="section-header">
+      <h2>Effect Heterogeneity by Subgroup</h2>
+    </div>
+
+    <p>The father-absence association varies across demographic subgroups. The charts and table below show raw and adjusted gaps for key outcomes by sex and race/ethnicity.</p>
+
+    <div class="chart-container">
+      <h3>Adjusted Earnings Gap by Race</h3>
+      <div class="chart-canvas-wrap">
+        <canvas id="chartEarningsRace"></canvas>
+      </div>
+      <p class="chart-note">NLSY97, adjusted OLS coefficients. Negative values indicate lower earnings for father-absent respondents.</p>
+    </div>
+
+    <div class="chart-container">
+      <h3>Adjusted g_proxy Gap by Race</h3>
+      <div class="chart-canvas-wrap">
+        <canvas id="chartGRace"></canvas>
+      </div>
+      <p class="chart-note">NLSY97, adjusted OLS coefficients in SD units. Negative values indicate lower cognitive scores for father-absent respondents.</p>
+    </div>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Subgroup</th>
+          <th>Outcome</th>
+          <th class="num">N</th>
+          <th class="num">Raw Gap</th>
+          <th class="num">Adjusted</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Female</td>
+          <td>g_proxy</td>
+          <td class="num">3,469</td>
+          <td class="num">-0.371</td>
+          <td class="num">-0.219</td>
+        </tr>
+        <tr>
+          <td>Male</td>
+          <td>g_proxy</td>
+          <td class="num">3,539</td>
+          <td class="num">-0.373</td>
+          <td class="num">-0.165</td>
+        </tr>
+        <tr>
+          <td>Black</td>
+          <td>g_proxy</td>
+          <td class="num">1,789</td>
+          <td class="num">-0.183</td>
+          <td class="num">-0.147</td>
+        </tr>
+        <tr>
+          <td>Hispanic</td>
+          <td>g_proxy</td>
+          <td class="num">1,349</td>
+          <td class="num">-0.156</td>
+          <td class="num">-0.148</td>
+        </tr>
+        <tr>
+          <td>Non-Black non-Hispanic</td>
+          <td>g_proxy</td>
+          <td class="num">3,870</td>
+          <td class="num">-0.245</td>
+          <td class="num">-0.230</td>
+        </tr>
+        <tr>
+          <td>Female</td>
+          <td>Earnings</td>
+          <td class="num">2,573</td>
+          <td class="num">-$14,280</td>
+          <td class="num">-$12,335</td>
+        </tr>
+        <tr>
+          <td>Male</td>
+          <td>Earnings</td>
+          <td class="num">2,626</td>
+          <td class="num">-$19,542</td>
+          <td class="num">-$14,205</td>
+        </tr>
+        <tr>
+          <td>Black</td>
+          <td>Earnings</td>
+          <td class="num">1,298</td>
+          <td class="num">-$10,159</td>
+          <td class="num">-$8,393</td>
+        </tr>
+        <tr>
+          <td>Hispanic</td>
+          <td>Earnings</td>
+          <td class="num">1,072</td>
+          <td class="num">-$8,570</td>
+          <td class="num">-$7,925</td>
+        </tr>
+        <tr>
+          <td>Non-Black non-Hispanic</td>
+          <td>Earnings</td>
+          <td class="num">2,829</td>
+          <td class="num">-$18,421</td>
+          <td class="num">-$17,711</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="insight-box">
+      <p><strong>Key finding:</strong> The adjusted earnings gap is largest in the non-Black non-Hispanic group (-$17.7K) and smallest among Hispanic respondents (-$7.9K). The cognitive gap is more uniform across race groups after adjustment (-0.15 to -0.23 SD).</p>
+    </div>
   </section>
 
 </div>
@@ -360,6 +473,98 @@
               ticks: { color: c.textSec, callback: function (v) { return v + '%'; } }
             },
             x: { grid: { display: false }, ticks: { color: c.textSec } }
+          }
+        }
+      }));
+    }
+
+    // 8a. Adjusted Earnings Gap by Race — horizontal bar
+    var ctxEarningsRace = document.getElementById('chartEarningsRace');
+    if (ctxEarningsRace) {
+      charts.push(new Chart(ctxEarningsRace, {
+        type: 'bar',
+        data: {
+          labels: ['Black', 'Hispanic', 'Non-Black, non-Hispanic'],
+          datasets: [{
+            label: 'Adjusted earnings gap ($)',
+            data: [-8393, -7925, -17711],
+            backgroundColor: [c.palette[0], c.palette[1], c.palette[2]],
+            borderRadius: 4,
+            maxBarThickness: 40
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: true,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: function (tip) {
+                  return '-$' + Math.abs(tip.raw).toLocaleString();
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: { color: c.grid },
+              ticks: {
+                color: c.textSec,
+                callback: function (v) { return '-$' + Math.abs(v / 1000) + 'K'; }
+              }
+            },
+            y: {
+              grid: { display: false },
+              ticks: { color: c.textSec }
+            }
+          }
+        }
+      }));
+    }
+
+    // 8b. Adjusted g_proxy Gap by Race — horizontal bar
+    var ctxGRace = document.getElementById('chartGRace');
+    if (ctxGRace) {
+      charts.push(new Chart(ctxGRace, {
+        type: 'bar',
+        data: {
+          labels: ['Black', 'Hispanic', 'Non-Black, non-Hispanic'],
+          datasets: [{
+            label: 'Adjusted g_proxy gap (SD)',
+            data: [-0.147, -0.148, -0.230],
+            backgroundColor: [c.palette[0], c.palette[1], c.palette[2]],
+            borderRadius: 4,
+            maxBarThickness: 40
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: true,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: function (tip) {
+                  return tip.raw.toFixed(3) + ' SD';
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: { color: c.grid },
+              ticks: {
+                color: c.textSec,
+                callback: function (v) { return v.toFixed(2) + ' SD'; }
+              }
+            },
+            y: {
+              grid: { display: false },
+              ticks: { color: c.textSec }
+            }
           }
         }
       }));

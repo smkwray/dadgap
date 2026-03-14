@@ -28,53 +28,85 @@
 
 <div class="content">
 
-  <h1>Adult Economic Outcomes</h1>
-  <p class="page-intro">Earnings, employment, and household income in 2021 by childhood father-presence status in the NLSY97 cohort.</p>
+  <h1>Outcome Associations</h1>
+  <p class="page-intro">Father-absence associations across earnings, cognition, education, health, mental health, family formation, and occupation in the NLSY97 cohort. All estimates are descriptive associations, not causal effects.</p>
 
-  <!-- ── 1. Overall Gaps ───────────────────────────────────── -->
+  <!-- ── 1. Cognition & Education ──────────────────────────── -->
   <section class="section">
     <div class="section-header">
-      <h2>Overall Gaps</h2>
-      <span class="section-tag">NLSY97 2021</span>
+      <h2>Cognition &amp; Education</h2>
+      <span class="section-tag">NLSY97</span>
+    </div>
+
+    <div class="chart-container">
+      <h3>Father-Absence Gaps: Cognition &amp; Education</h3>
+      <div class="chart-canvas-wrap">
+        <canvas id="chartCogEd"></canvas>
+      </div>
     </div>
 
     <table class="data-table">
       <thead>
         <tr>
-          <th>Outcome</th>
-          <th class="num">Father-Present</th>
-          <th class="num">Father-Absent</th>
-          <th class="num">Gap</th>
+          <th>Measure</th>
+          <th class="num">n</th>
+          <th class="num">Present Mean</th>
+          <th class="num">Absent Mean</th>
+          <th class="num">Raw Gap</th>
+          <th class="num">Adj. Coef</th>
+          <th class="num">SE</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td>Mean earnings</td>
-          <td class="num">$70,784</td>
-          <td class="num">$51,731</td>
-          <td class="num highlight">$19,053</td>
+          <td>g_proxy (SD)</td>
+          <td class="num">8,982</td>
+          <td class="num">0.187</td>
+          <td class="num">&minus;0.186</td>
+          <td class="num highlight">&minus;0.373</td>
+          <td class="num">&minus;0.193</td>
+          <td class="num">0.023</td>
         </tr>
         <tr>
-          <td>Employment rate</td>
-          <td class="num">83.0%</td>
-          <td class="num">75.3%</td>
-          <td class="num highlight">7.7 pp</td>
+          <td>Education years (2007)</td>
+          <td class="num">8,576</td>
+          <td class="num">13.86</td>
+          <td class="num">12.53</td>
+          <td class="num highlight">&minus;1.332</td>
+          <td class="num">&minus;1.160</td>
+          <td class="num">0.068</td>
         </tr>
         <tr>
-          <td>Mean HH income</td>
-          <td class="num">$121,212</td>
-          <td class="num">$80,283</td>
-          <td class="num highlight">$40,929</td>
+          <td>SAT math bin</td>
+          <td class="num">3,214</td>
+          <td class="num">0.573</td>
+          <td class="num">0.227</td>
+          <td class="num highlight">&minus;0.346</td>
+          <td class="num">&minus;0.156</td>
+          <td class="num">0.031</td>
+        </tr>
+        <tr>
+          <td>ACT bin</td>
+          <td class="num">2,896</td>
+          <td class="num">0.518</td>
+          <td class="num">0.216</td>
+          <td class="num highlight">&minus;0.302</td>
+          <td class="num">&minus;0.148</td>
+          <td class="num">0.034</td>
         </tr>
       </tbody>
     </table>
+
+    <div class="insight-box">
+      <p>Father-absent respondents score 0.37 SD lower on cognitive composite and complete 1.3 fewer years of education. After adjusting for race, sex, parental education, and other covariates, about half of the g_proxy gap (0.19 SD) and most of the education gap (1.16 years) persists.</p>
+    </div>
   </section>
 
-  <!-- ── 2. Earnings Gap by Race and Sex ───────────────────── -->
+  <!-- ── 2. Earnings & Employment ─────────────────────────── -->
   <section class="section">
     <div class="section-header">
-      <h2>Earnings Gap by Race and Sex</h2>
-      <span class="section-tag">Gap = Present &minus; Absent</span>
+      <h2>Earnings &amp; Employment</h2>
+      <span class="section-tag">NLSY97 2021</span>
     </div>
 
     <div class="chart-container">
@@ -133,26 +165,257 @@
       </tbody>
     </table>
 
-    <div class="insight-box">
-      <p>The gap is widest among non-Black, non-Hispanic respondents ($17&ndash;20K) and narrowest among Hispanic females ($6.5K). This reflects both different baseline earnings levels and different prevalence of father absence across groups.</p>
-    </div>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Outcome</th>
+          <th class="num">Father-Present</th>
+          <th class="num">Father-Absent</th>
+          <th class="num">Gap</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Mean earnings</td>
+          <td class="num">$70,784</td>
+          <td class="num">$51,731</td>
+          <td class="num highlight">$19,053</td>
+        </tr>
+        <tr>
+          <td>Employment rate</td>
+          <td class="num">83.0%</td>
+          <td class="num">75.3%</td>
+          <td class="num highlight">7.7 pp</td>
+        </tr>
+        <tr>
+          <td>Mean HH income</td>
+          <td class="num">$121,212</td>
+          <td class="num">$80,283</td>
+          <td class="num highlight">$40,929</td>
+        </tr>
+      </tbody>
+    </table>
   </section>
 
-  <!-- ── 3. Earnings by Status and Race/Sex ────────────────── -->
+  <!-- ── 3. Health & Substance ────────────────────────────── -->
   <section class="section">
     <div class="section-header">
-      <h2>Earnings by Status and Race/Sex</h2>
+      <h2>Health &amp; Substance Use</h2>
+      <span class="section-tag">Adjusted coefficients</span>
     </div>
 
     <div class="chart-container">
-      <h3>Mean 2021 Earnings by Father Status</h3>
+      <h3>Health &amp; Substance Adjusted Coefficients</h3>
       <div class="chart-canvas-wrap">
-        <canvas id="chartEarningsGrouped"></canvas>
+        <canvas id="chartHealth"></canvas>
       </div>
+    </div>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Outcome</th>
+          <th class="num">Adj. Coef</th>
+          <th class="num">Unit</th>
+          <th>Significance</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Poor self-rated health</td>
+          <td class="num highlight">+0.059</td>
+          <td class="num">share</td>
+          <td>p &lt; 0.001</td>
+        </tr>
+        <tr>
+          <td>BMI (2011)</td>
+          <td class="num highlight">+0.687</td>
+          <td class="num">units</td>
+          <td>p &lt; 0.05</td>
+        </tr>
+        <tr>
+          <td>Obesity</td>
+          <td class="num highlight">+0.013</td>
+          <td class="num">share</td>
+          <td>n.s.</td>
+        </tr>
+        <tr>
+          <td>Smoking days/30</td>
+          <td class="num highlight">+2.573</td>
+          <td class="num">days</td>
+          <td>p &lt; 0.001</td>
+        </tr>
+        <tr>
+          <td>Marijuana days/30</td>
+          <td class="num highlight">+2.890</td>
+          <td class="num">days</td>
+          <td>p &lt; 0.001</td>
+        </tr>
+        <tr>
+          <td>Alcohol days/30</td>
+          <td class="num highlight">&minus;0.310</td>
+          <td class="num">days</td>
+          <td>n.s.</td>
+        </tr>
+        <tr>
+          <td>Binge drinking</td>
+          <td class="num highlight">+0.019</td>
+          <td class="num">share</td>
+          <td>n.s.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ── 4. Mental Health ─────────────────────────────────── -->
+  <section class="section">
+    <div class="section-header">
+      <h2>Mental Health</h2>
+      <span class="section-tag">Adjusted coefficients</span>
+    </div>
+
+    <div class="chart-container">
+      <h3>Mental Health Adjusted Coefficients</h3>
+      <div class="chart-canvas-wrap">
+        <canvas id="chartMental"></canvas>
+      </div>
+    </div>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Outcome</th>
+          <th class="num">Adj. Coef</th>
+          <th class="num">Unit</th>
+          <th>Significance</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>CES-D score</td>
+          <td class="num highlight">+0.788</td>
+          <td class="num">score</td>
+          <td>p &lt; 0.001</td>
+        </tr>
+        <tr>
+          <td>Elevated CES-D (&ge;16)</td>
+          <td class="num highlight">+0.013</td>
+          <td class="num">share</td>
+          <td>p &lt; 0.01</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ── 5. Family Formation ──────────────────────────────── -->
+  <section class="section">
+    <div class="section-header">
+      <h2>Family Formation</h2>
+      <span class="section-tag">Adjusted coefficients</span>
+    </div>
+
+    <div class="chart-container">
+      <h3>Family Formation Adjusted Coefficients</h3>
+      <div class="chart-canvas-wrap">
+        <canvas id="chartFamily"></canvas>
+      </div>
+    </div>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Outcome</th>
+          <th class="num">Adj. Coef</th>
+          <th class="num">Unit</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Ever married</td>
+          <td class="num highlight">&minus;0.048</td>
+          <td class="num">share</td>
+        </tr>
+        <tr>
+          <td>Currently married</td>
+          <td class="num highlight">&minus;0.100</td>
+          <td class="num">share</td>
+        </tr>
+        <tr>
+          <td>Total marriages</td>
+          <td class="num highlight">&minus;0.021</td>
+          <td class="num">count</td>
+        </tr>
+        <tr>
+          <td>Total bio children</td>
+          <td class="num highlight">+0.106</td>
+          <td class="num">count</td>
+        </tr>
+        <tr>
+          <td>Age first marriage</td>
+          <td class="num highlight">&minus;0.422</td>
+          <td class="num">years</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ── 6. Near-Term Event-Time ──────────────────────────── -->
+  <section class="section">
+    <div class="section-header">
+      <h2>Near-Term Event-Time (Post-Exit 3+ Years)</h2>
+      <span class="section-tag">Post-only design</span>
+    </div>
+
+    <div class="chart-container">
+      <h3>Post-Father-Exit Outcomes</h3>
+      <div class="chart-canvas-wrap">
+        <canvas id="chartEventTime"></canvas>
+      </div>
+    </div>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Outcome</th>
+          <th class="num">Coefficient</th>
+          <th class="num">Unit</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Schooling engagement</td>
+          <td class="num highlight">&minus;1.253</td>
+          <td class="num">months</td>
+        </tr>
+        <tr>
+          <td>K-12 enrollment</td>
+          <td class="num highlight">&minus;0.175</td>
+          <td class="num">months</td>
+        </tr>
+        <tr>
+          <td>College enrollment</td>
+          <td class="num highlight">&minus;1.088</td>
+          <td class="num">months</td>
+        </tr>
+        <tr>
+          <td>Any arrest</td>
+          <td class="num highlight">+0.023</td>
+          <td class="num">share</td>
+        </tr>
+        <tr>
+          <td>Any incarceration</td>
+          <td class="num highlight">+0.012</td>
+          <td class="num">share</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="warning-box">
+      <p>These are post-only comparisons of children who experienced father exit vs continuously-present controls, matched on birth year, sex, and race. They are descriptive contrasts, not causal event-study estimates.</p>
     </div>
   </section>
 
-  <!-- ── 4. NLSY97 vs Public Benchmarks ────────────────────── -->
+  <!-- ── 7. NLSY97 vs Public Benchmarks ───────────────────── -->
   <section class="section">
     <div class="section-header">
       <h2>NLSY97 vs Public Benchmarks</h2>
@@ -167,25 +430,6 @@
     </div>
   </section>
 
-  <!-- ── 5. Event-Time Outcomes ────────────────────────────── -->
-  <section class="section">
-    <div class="section-header">
-      <h2>Event-Time Outcomes (Post-Exit)</h2>
-      <span class="section-tag">Preferred Specification</span>
-    </div>
-
-    <div class="chart-container">
-      <h3>Post-Father-Exit Outcomes (3+ Years Post)</h3>
-      <div class="chart-canvas-wrap">
-        <canvas id="chartEventTime"></canvas>
-      </div>
-    </div>
-
-    <div class="insight-box">
-      <p>Event-time estimates use a post-only design comparing children who experienced father exit to continuously-present controls, matched on birth year, sex, and race. These are near-term associations, not causal estimates.</p>
-    </div>
-  </section>
-
 </div>
 
 <footer class="site-footer"><div class="footer-inner"><span>dadgap &middot; MIT License</span><span>Data: NLSY97, ACS PUMS, CPS ASEC</span></div></footer>
@@ -197,6 +441,7 @@
   var charts = [];
 
   function fmt(v) { return '$' + v.toLocaleString(); }
+  function sign(v) { return (v >= 0 ? '+' : '') + v.toFixed(3); }
 
   function buildCharts() {
     var c = C();
@@ -204,12 +449,63 @@
     charts.forEach(function (ch) { ch.destroy(); });
     charts.length = 0;
 
+    /* ── Chart 1: Cognition & Education — horizontal bar ── */
+    var cogLabels = ['g_proxy (SD)', 'Education years', 'SAT math bin', 'ACT bin'];
+    var cogRaw    = [-0.373, -1.332, -0.346, -0.302];
+    var cogAdj    = [-0.193, -1.160, -0.156, -0.148];
+
+    charts.push(new Chart(document.getElementById('chartCogEd'), {
+      type: 'bar',
+      data: {
+        labels: cogLabels,
+        datasets: [
+          {
+            label: 'Raw gap',
+            data: cogRaw,
+            backgroundColor: c.red,
+            borderRadius: 4,
+            maxBarThickness: 24
+          },
+          {
+            label: 'Adjusted',
+            data: cogAdj,
+            backgroundColor: c.accent,
+            borderRadius: 4,
+            maxBarThickness: 24
+          }
+        ]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+          legend: { labels: { color: c.textSec, boxWidth: 14, padding: 16 } },
+          tooltip: {
+            callbacks: {
+              label: function (tip) {
+                return tip.dataset.label + ': ' + tip.raw.toFixed(3);
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: { color: c.grid },
+            ticks: { color: c.textSec }
+          },
+          y: {
+            grid: { display: false },
+            ticks: { color: c.textSec }
+          }
+        }
+      }
+    }));
+
+    /* ── Chart 2: Earnings Gap by Race/Sex — grouped bar ── */
     var groups = ['Black F', 'Black M', 'Hisp F', 'Hisp M', 'NBNH F', 'NBNH M'];
     var gaps = [9604, 12158, 6483, 8856, 17126, 19853];
-    var present = [53579, 58497, 50535, 66143, 65024, 89417];
-    var absent  = [43975, 46339, 44052, 57287, 47898, 69564];
 
-    /* ── Chart 1: Gap by Race/Sex ───────────────────────── */
     charts.push(new Chart(document.getElementById('chartGapRaceSex'), {
       type: 'bar',
       data: {
@@ -240,47 +536,188 @@
       }
     }));
 
-    /* ── Chart 2: Grouped bar — Present vs Absent ───────── */
-    charts.push(new Chart(document.getElementById('chartEarningsGrouped'), {
+    /* ── Chart 3: Health & Substance — horizontal bar ───── */
+    var hlLabels = [
+      'Poor self-rated health',
+      'BMI (2011)',
+      'Obesity',
+      'Smoking days/30',
+      'Marijuana days/30',
+      'Alcohol days/30',
+      'Binge drinking'
+    ];
+    var hlData = [0.059, 0.687, 0.013, 2.573, 2.890, -0.310, 0.019];
+    var hlColors = hlData.map(function (v) { return v > 0 ? c.red : c.green; });
+
+    charts.push(new Chart(document.getElementById('chartHealth'), {
       type: 'bar',
       data: {
-        labels: groups,
-        datasets: [
-          {
-            label: 'Father-Present',
-            data: present,
-            backgroundColor: c.accent,
-            borderRadius: 4,
-            maxBarThickness: 50
-          },
-          {
-            label: 'Father-Absent',
-            data: absent,
-            backgroundColor: c.orange,
-            borderRadius: 4,
-            maxBarThickness: 50
+        labels: hlLabels,
+        datasets: [{
+          label: 'Adj. Coefficient',
+          data: hlData,
+          backgroundColor: hlColors,
+          borderRadius: 4,
+          maxBarThickness: 24
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function (tip) { return sign(tip.raw); }
+            }
           }
-        ]
+        },
+        scales: {
+          x: {
+            grid: { color: c.grid },
+            ticks: { color: c.textSec }
+          },
+          y: {
+            grid: { display: false },
+            ticks: { color: c.textSec }
+          }
+        }
+      }
+    }));
+
+    /* ── Chart 4: Mental Health — bar ─────────────────── */
+    charts.push(new Chart(document.getElementById('chartMental'), {
+      type: 'bar',
+      data: {
+        labels: ['CES-D score', 'Elevated CES-D (\u226516)'],
+        datasets: [{
+          label: 'Adj. Coefficient',
+          data: [0.788, 0.013],
+          backgroundColor: [c.red, c.orange],
+          borderRadius: 4,
+          maxBarThickness: 60
+        }]
       },
       options: {
         responsive: true,
         maintainAspectRatio: true,
         plugins: {
-          legend: { labels: { color: c.textSec, boxWidth: 14, padding: 16 } },
-          tooltip: { callbacks: { label: function (tip) { return tip.dataset.label + ': ' + fmt(tip.raw); } } }
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function (tip) { return sign(tip.raw); }
+            }
+          }
         },
         scales: {
           y: {
             beginAtZero: true,
             grid: { color: c.grid },
-            ticks: { color: c.textSec, callback: function (v) { return '$' + (v / 1000) + 'K'; } }
+            ticks: { color: c.textSec }
           },
           x: { grid: { display: false }, ticks: { color: c.textSec } }
         }
       }
     }));
 
-    /* ── Chart 3: Benchmarks ────────────────────────────── */
+    /* ── Chart 5: Family Formation — horizontal bar ────── */
+    var famLabels = [
+      'Ever married',
+      'Currently married',
+      'Total marriages',
+      'Total bio children',
+      'Age first marriage'
+    ];
+    var famData = [-0.048, -0.100, -0.021, 0.106, -0.422];
+    var famColors = famData.map(function (v) { return v > 0 ? c.orange : c.accent; });
+
+    charts.push(new Chart(document.getElementById('chartFamily'), {
+      type: 'bar',
+      data: {
+        labels: famLabels,
+        datasets: [{
+          label: 'Adj. Coefficient',
+          data: famData,
+          backgroundColor: famColors,
+          borderRadius: 4,
+          maxBarThickness: 24
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function (tip) { return sign(tip.raw); }
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: { color: c.grid },
+            ticks: { color: c.textSec }
+          },
+          y: {
+            grid: { display: false },
+            ticks: { color: c.textSec }
+          }
+        }
+      }
+    }));
+
+    /* ── Chart 6: Event-Time — horizontal bar ─────────── */
+    var etLabels = [
+      'Schooling engagement',
+      'K-12 enrollment',
+      'College enrollment',
+      'Any arrest',
+      'Any incarceration'
+    ];
+    var etData = [-1.253, -0.175, -1.088, 0.023, 0.012];
+    var etColors = etData.map(function (v) { return v < 0 ? c.red : c.orange; });
+
+    charts.push(new Chart(document.getElementById('chartEventTime'), {
+      type: 'bar',
+      data: {
+        labels: etLabels,
+        datasets: [{
+          label: 'Coefficient',
+          data: etData,
+          backgroundColor: etColors,
+          borderRadius: 4,
+          maxBarThickness: 24
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function (tip) { return sign(tip.raw); }
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: { color: c.grid },
+            ticks: { color: c.textSec }
+          },
+          y: {
+            grid: { display: false },
+            ticks: { color: c.textSec }
+          }
+        }
+      }
+    }));
+
+    /* ── Chart 7: Benchmarks — bar ────────────────────── */
     charts.push(new Chart(document.getElementById('chartBenchmarks'), {
       type: 'bar',
       data: {
@@ -307,57 +744,6 @@
             ticks: { color: c.textSec, callback: function (v) { return '$' + (v / 1000) + 'K'; } }
           },
           x: { grid: { display: false }, ticks: { color: c.textSec } }
-        }
-      }
-    }));
-
-    /* ── Chart 4: Event-Time Horizontal Bar ─────────────── */
-    var etLabels = [
-      'Schooling months',
-      'K-12 months',
-      'College months',
-      'Any arrest',
-      'Any incarceration'
-    ];
-    var etData = [-1.25, -0.18, -1.09, 0.023, 0.012];
-    var etColors = etData.map(function (v) { return v < 0 ? c.red : c.orange; });
-
-    charts.push(new Chart(document.getElementById('chartEventTime'), {
-      type: 'bar',
-      data: {
-        labels: etLabels,
-        datasets: [{
-          label: 'Coefficient',
-          data: etData,
-          backgroundColor: etColors,
-          borderRadius: 4,
-          maxBarThickness: 28
-        }]
-      },
-      options: {
-        indexAxis: 'y',
-        responsive: true,
-        maintainAspectRatio: true,
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label: function (tip) {
-                var v = tip.raw;
-                return (v >= 0 ? '+' : '') + v.toFixed(3);
-              }
-            }
-          }
-        },
-        scales: {
-          x: {
-            grid: { color: c.grid },
-            ticks: { color: c.textSec }
-          },
-          y: {
-            grid: { display: false },
-            ticks: { color: c.textSec }
-          }
         }
       }
     }));
