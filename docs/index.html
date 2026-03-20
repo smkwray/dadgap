@@ -6,6 +6,7 @@
   <meta name="color-scheme" content="light dark">
   <title>dadgap — Father Absence &amp; Adult Outcomes</title>
   <script src="js/theme.js"></script>
+  <script src="js/results.js"></script>
   <link rel="stylesheet" href="css/style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
 </head>
@@ -34,19 +35,19 @@
 
     <div class="stats-row">
       <div class="stat-card">
-        <div class="stat-value">8,982</div>
+        <div class="stat-value" id="statRespondents"></div>
         <div class="stat-label">NLSY97 Respondents</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value">43.2%</div>
+        <div class="stat-value" id="statAbsent"></div>
         <div class="stat-label">Father-Absent</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value">$19,053</div>
+        <div class="stat-value" id="statEarningsGap"></div>
         <div class="stat-label">Earnings Gap</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value">-0.19 SD</div>
+        <div class="stat-value" id="statGGap"></div>
         <div class="stat-label">Adjusted g Gap</div>
       </div>
     </div>
@@ -64,19 +65,19 @@
     <div class="card-grid">
       <div class="card">
         <h3>Cognitive &amp; education gaps persist after adjustment</h3>
-        <p>Father-absent respondents score 0.37 SD lower on g_proxy; 0.19 SD persists after covariate adjustment. Education gap: 1.3 years raw, 1.2 years adjusted.</p>
+        <p id="homeFinding1"></p>
         <a href="outcomes.html" class="card-link">Explore outcomes</a>
       </div>
 
       <div class="card">
         <h3>Earnings gap varies by race</h3>
-        <p>Overall $19,053 gap. Largest for non-Black non-Hispanic males ($19,853), smallest for Hispanic females ($6,483). Employment gap: 7.7 pp.</p>
+        <p id="homeFinding2"></p>
         <a href="outcomes.html" class="card-link">Explore outcomes</a>
       </div>
 
       <div class="card">
         <h3>Steep poverty gradient</h3>
-        <p>ACS 2024: 59% of children below poverty lack a resident father vs 7.6% in the top income quartile. Father absence concentrates at the bottom of the income distribution.</p>
+        <p id="homeFinding3"></p>
         <a href="prevalence.html" class="card-link">View prevalence data</a>
       </div>
     </div>
@@ -127,6 +128,23 @@
     </div>
   </section>
 
+  <section class="section">
+    <div class="section-header">
+      <h2>Provenance &amp; Downloads</h2>
+    </div>
+    <div class="card">
+      <p>This site is built from committed appendix and synthesis artifacts plus the derived <code>docs/results.json</code> payload.</p>
+      <p><strong>Generated:</strong> <span id="provenanceGeneratedAt">Loading...</span></p>
+      <p><strong>Source manifest:</strong> <span id="provenanceSourceManifest">Loading...</span></p>
+      <p>
+        <a href="results.json" class="card-link">docs/results.json</a>
+        <a href="../outputs/manifests/results.json" class="card-link">canonical results.json</a>
+        <a href="../outputs/manifests/cross_cohort_synthesis_summary.csv" class="card-link">cross-cohort summary CSV</a>
+        <a href="../outputs/manifests/cross_cohort_synthesis_forest_ready.csv" class="card-link">forest-ready CSV</a>
+      </p>
+    </div>
+  </section>
+
 </div>
 
 <footer class="site-footer"><div class="footer-inner"><span>dadgap &middot; MIT License</span><span>Data: NLSY97, ACS PUMS, CPS ASEC</span></div></footer>
@@ -137,27 +155,23 @@
 
   var charts = [];
 
-  function buildCharts() {
+  function buildCharts(data) {
     var c = C();
 
-    // Destroy previous instances
     charts.forEach(function (ch) { ch.destroy(); });
     charts.length = 0;
 
-    // At a Glance — horizontal bar of adjusted coefficients
     var ctx = document.getElementById('chartGlance');
     if (!ctx) return;
-
-    var labels = ['g_proxy (SD)', 'Education (years)', 'Poor health (share)', 'CES-D (score)', 'Ever married (share)'];
-    var values = [-0.193, -1.160, 0.059, 0.788, -0.048];
+    var chart = data.glance_chart || { labels: [], values: [] };
 
     charts.push(new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: labels,
+        labels: chart.labels || [],
         datasets: [{
           label: 'Adjusted coefficient',
-          data: values,
+          data: chart.values || [],
           backgroundColor: c.accent,
           borderRadius: 4,
           maxBarThickness: 40
@@ -192,9 +206,27 @@
     }));
   }
 
-  dgDefaults();
-  buildCharts();
-  window.dgRebuild = function () { dgDefaults(); buildCharts(); };
+  function render(data) {
+    document.getElementById('statRespondents').textContent = data.stats.respondents || 'unavailable';
+    document.getElementById('statAbsent').textContent = data.stats.father_absent_pct || 'unavailable';
+    document.getElementById('statEarningsGap').textContent = data.stats.earnings_gap || 'unavailable';
+    document.getElementById('statGGap').textContent = data.stats.adjusted_g_gap || 'unavailable';
+    document.getElementById('homeFinding1').textContent = (data.key_findings[0] || {}).text || '';
+    document.getElementById('homeFinding2').textContent = (data.key_findings[1] || {}).text || '';
+    document.getElementById('homeFinding3').textContent = (data.key_findings[2] || {}).text || '';
+    dgDefaults();
+    buildCharts(data);
+    window.dgRebuild = function () { dgDefaults(); buildCharts(data); };
+  }
+
+  window.dgResults.load()
+    .then(function (payload) {
+      var provenance = window.dgResults.provenance(payload);
+      document.getElementById('provenanceGeneratedAt').textContent = provenance.generated_at_utc || 'unavailable';
+      document.getElementById('provenanceSourceManifest').textContent = provenance.source_manifest || 'unavailable';
+      render(window.dgResults.home(payload));
+    })
+    .catch(function () {});
 })();
 </script>
 </body>

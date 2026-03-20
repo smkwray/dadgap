@@ -12,6 +12,8 @@ import numpy as np
 import pandas as pd
 import pyarrow.csv as pa_csv
 
+from father_longrun.models.associations import fit_adjusted_glm, summarize_prevalence
+
 
 COHORT_DISCOVERY_ORDER: tuple[str, ...] = ("nlsy79", "cnlsy", "nlsy97")
 MANIFEST_TEMPLATE_MAP: dict[str, str] = {
@@ -2038,35 +2040,52 @@ def build_nlsy97_fatherlessness_profiles(
 
     def _group_summary(group_col: str, *, value_label: str | None = None) -> pd.DataFrame:
         label = value_label or group_col
-        grouped = (
+        prevalence = summarize_prevalence(frame, treatment="primary_treatment_nlsy97", group_by=group_col)
+        prevalence = prevalence.loc[prevalence["group_type"] != "overall"].copy()
+        prevalence = prevalence.rename(
+            columns={
+                "binary_mean": "fatherlessness_rate",
+                "binary_complement": "father_present_rate",
+            }
+        )
+        prevalence["group_type"] = label
+        prevalence = prevalence[["group_type", "group_value", "n", "fatherlessness_rate", "father_present_rate"]]
+
+        grouped_means = (
             frame.groupby(group_col, dropna=False)
             .agg(
-                n=("respondent_id", "count"),
-                fatherlessness_rate=("primary_treatment_nlsy97", "mean"),
                 mother_education_mean=("mother_education_clean", "mean"),
                 father_education_mean=("father_education_clean", "mean"),
             )
             .reset_index()
+            .rename(columns={group_col: "group_value"})
         )
-        grouped.insert(0, "group_type", label)
-        grouped = grouped.rename(columns={group_col: "group_value"})
-        grouped["father_present_rate"] = 1 - grouped["fatherlessness_rate"]
-        return grouped
+        grouped_means["group_value"] = grouped_means["group_value"].astype("string").fillna("missing")
+        prevalence["group_value"] = prevalence["group_value"].astype("string")
+        return prevalence.merge(grouped_means, on="group_value", how="left")
+
+    overall_summary = summarize_prevalence(frame, treatment="primary_treatment_nlsy97").rename(
+        columns={
+            "binary_mean": "fatherlessness_rate",
+            "binary_complement": "father_present_rate",
+        }
+    )
+    overall_summary["mother_education_mean"] = float(frame["mother_education_clean"].mean())
+    overall_summary["father_education_mean"] = float(frame["father_education_clean"].mean())
+    overall_summary = overall_summary[
+        [
+            "group_type",
+            "group_value",
+            "n",
+            "fatherlessness_rate",
+            "mother_education_mean",
+            "father_education_mean",
+            "father_present_rate",
+        ]
+    ]
 
     summary_frames = [
-        pd.DataFrame(
-            [
-                {
-                    "group_type": "overall",
-                    "group_value": "overall",
-                    "n": int(len(frame.index)),
-                    "fatherlessness_rate": float(frame["primary_treatment_nlsy97"].mean()),
-                    "mother_education_mean": float(frame["mother_education_clean"].mean()),
-                    "father_education_mean": float(frame["father_education_clean"].mean()),
-                    "father_present_rate": float(1 - frame["primary_treatment_nlsy97"].mean()),
-                }
-            ]
-        ),
+        overall_summary,
         _group_summary("sex"),
         _group_summary("race_ethnicity_3cat"),
         _group_summary("sex_x_race_ethnicity"),
@@ -2085,8 +2104,6 @@ def build_nlsy97_fatherlessness_profiles(
         columns=["term", "coefficient", "std_error", "p_value", "odds_ratio", "model", "n"]
     )
     try:
-        import statsmodels.api as sm
-
         model_frame = frame[
             [
                 "primary_treatment_nlsy97",
@@ -2105,32 +2122,25 @@ def build_nlsy97_fatherlessness_profiles(
         model_frame["mother_education_filled"] = model_frame["mother_education_clean"].fillna(mother_median)
         model_frame["father_education_filled"] = model_frame["father_education_clean"].fillna(father_median)
         model_frame["birth_year_centered"] = model_frame["birth_year_clean"] - birth_year_mean
-        design = pd.get_dummies(
-            model_frame[["sex", "race_ethnicity_3cat"]],
-            prefix=["sex", "race"],
-            drop_first=True,
-            dtype=float,
+        predictor_frame = fit_adjusted_glm(
+            model_frame,
+            outcome="primary_treatment_nlsy97",
+            treatment="birth_year_centered",
+            family="binomial",
+            covariates=[
+                "mother_education_filled",
+                "father_education_filled",
+                "mother_education_missing",
+                "father_education_missing",
+            ],
+            categorical_covariates=["sex", "race_ethnicity_3cat"],
         )
-        design["mother_education_filled"] = model_frame["mother_education_filled"].astype(float)
-        design["father_education_filled"] = model_frame["father_education_filled"].astype(float)
-        design["mother_education_missing"] = model_frame["mother_education_missing"].astype(float)
-        design["father_education_missing"] = model_frame["father_education_missing"].astype(float)
-        design["birth_year_centered"] = model_frame["birth_year_centered"].astype(float)
-        design = sm.add_constant(design, has_constant="add")
-        fit = sm.Logit(model_frame["primary_treatment_nlsy97"].astype(float), design).fit(disp=False, cov_type="HC1")
-        predictor_frame = pd.DataFrame(
-            {
-                "term": fit.params.index,
-                "coefficient": fit.params.values,
-                "std_error": fit.bse.values,
-                "p_value": fit.pvalues.values,
-                "odds_ratio": np.exp(fit.params.values),
-                "model": "logit_hc1",
-                "n": int(model_frame.shape[0]),
-            }
-        )
+        predictor_frame = predictor_frame[
+            ["term", "coefficient", "std_error", "p_value", "odds_ratio", "model", "n"]
+        ].copy()
+        predictor_frame["term"] = predictor_frame["term"].replace({"intercept": "const"})
         predictor_note = (
-            "Descriptive logit with sex, race/ethnicity, mother education, father education, and birth year."
+            "Descriptive binomial GLM with sex, race/ethnicity, mother education, father education, and birth year."
         )
     except Exception as exc:  # pragma: no cover - fallback only
         predictor_note = f"Predictor model not estimated: {exc}"

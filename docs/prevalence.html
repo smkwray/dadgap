@@ -6,6 +6,7 @@
   <meta name="color-scheme" content="light dark">
   <title>Prevalence &amp; Heterogeneity — dadgap</title>
   <script src="js/theme.js"></script>
+  <script src="js/results.js"></script>
   <link rel="stylesheet" href="css/style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
 </head>
@@ -55,12 +56,12 @@
     <div class="card-grid">
       <div class="card">
         <h3>Female</h3>
-        <p style="font-size:2rem;font-weight:800;font-family:var(--font-mono);color:var(--color-heading);">45.4%</p>
+        <p id="femaleCardValue" style="font-size:2rem;font-weight:800;font-family:var(--font-mono);color:var(--color-heading);"></p>
         <p>father-absent</p>
       </div>
       <div class="card">
         <h3>Male</h3>
-        <p style="font-size:2rem;font-weight:800;font-family:var(--font-mono);color:var(--color-heading);">41.1%</p>
+        <p id="maleCardValue" style="font-size:2rem;font-weight:800;font-family:var(--font-mono);color:var(--color-heading);"></p>
         <p>father-absent</p>
       </div>
     </div>
@@ -144,33 +145,7 @@
           <th class="num">p-value</th>
         </tr>
       </thead>
-      <tbody>
-        <tr>
-          <td>Non-Black non-Hispanic (vs Black)</td>
-          <td class="num">0.287</td>
-          <td class="num">&lt;1e-112</td>
-        </tr>
-        <tr>
-          <td>Hispanic (vs Black)</td>
-          <td class="num">0.361</td>
-          <td class="num">&lt;1e-55</td>
-        </tr>
-        <tr>
-          <td>Father education missing</td>
-          <td class="num">1.431</td>
-          <td class="num">&lt;1e-6</td>
-        </tr>
-        <tr>
-          <td>Birth year (centered)</td>
-          <td class="num">0.958</td>
-          <td class="num">0.007</td>
-        </tr>
-        <tr>
-          <td>Male</td>
-          <td class="num">0.843</td>
-          <td class="num">&lt;0.001</td>
-        </tr>
-      </tbody>
+      <tbody id="predictorsBody"></tbody>
     </table>
   </section>
 
@@ -208,82 +183,11 @@
           <th class="num">Adjusted</th>
         </tr>
       </thead>
-      <tbody>
-        <tr>
-          <td>Female</td>
-          <td>g_proxy</td>
-          <td class="num">3,469</td>
-          <td class="num">-0.371</td>
-          <td class="num">-0.219</td>
-        </tr>
-        <tr>
-          <td>Male</td>
-          <td>g_proxy</td>
-          <td class="num">3,539</td>
-          <td class="num">-0.373</td>
-          <td class="num">-0.165</td>
-        </tr>
-        <tr>
-          <td>Black</td>
-          <td>g_proxy</td>
-          <td class="num">1,789</td>
-          <td class="num">-0.183</td>
-          <td class="num">-0.147</td>
-        </tr>
-        <tr>
-          <td>Hispanic</td>
-          <td>g_proxy</td>
-          <td class="num">1,349</td>
-          <td class="num">-0.156</td>
-          <td class="num">-0.148</td>
-        </tr>
-        <tr>
-          <td>Non-Black non-Hispanic</td>
-          <td>g_proxy</td>
-          <td class="num">3,870</td>
-          <td class="num">-0.245</td>
-          <td class="num">-0.230</td>
-        </tr>
-        <tr>
-          <td>Female</td>
-          <td>Earnings</td>
-          <td class="num">2,573</td>
-          <td class="num">-$14,280</td>
-          <td class="num">-$12,335</td>
-        </tr>
-        <tr>
-          <td>Male</td>
-          <td>Earnings</td>
-          <td class="num">2,626</td>
-          <td class="num">-$19,542</td>
-          <td class="num">-$14,205</td>
-        </tr>
-        <tr>
-          <td>Black</td>
-          <td>Earnings</td>
-          <td class="num">1,298</td>
-          <td class="num">-$10,159</td>
-          <td class="num">-$8,393</td>
-        </tr>
-        <tr>
-          <td>Hispanic</td>
-          <td>Earnings</td>
-          <td class="num">1,072</td>
-          <td class="num">-$8,570</td>
-          <td class="num">-$7,925</td>
-        </tr>
-        <tr>
-          <td>Non-Black non-Hispanic</td>
-          <td>Earnings</td>
-          <td class="num">2,829</td>
-          <td class="num">-$18,421</td>
-          <td class="num">-$17,711</td>
-        </tr>
-      </tbody>
+      <tbody id="heterogeneityBody"></tbody>
     </table>
 
     <div class="insight-box">
-      <p><strong>Key finding:</strong> The adjusted earnings gap is largest in the non-Black non-Hispanic group (-$17.7K) and smallest among Hispanic respondents (-$7.9K). The cognitive gap is more uniform across race groups after adjustment (-0.15 to -0.23 SD).</p>
+      <p><strong>Key finding:</strong> <span id="heterogeneityInsight"></span></p>
     </div>
   </section>
 
@@ -297,22 +201,21 @@
 
   var charts = [];
 
-  function buildCharts() {
+  function buildCharts(data) {
     var c = C();
 
     charts.forEach(function (ch) { ch.destroy(); });
     charts.length = 0;
 
-    // 1. Father-Absence Rate by Race (NLSY97)
     var ctxRace = document.getElementById('chartRace');
-    if (ctxRace) {
+    if (ctxRace && data.race_chart) {
       charts.push(new Chart(ctxRace, {
         type: 'bar',
         data: {
-          labels: ['Black\n(n=2,334)', 'Hispanic\n(n=1,900)', 'Non-Black,\nnon-Hispanic\n(n=4,748)', 'Overall\n(n=8,982)'],
+          labels: data.race_chart.labels || [],
           datasets: [{
             label: 'Father-Absent (%)',
-            data: [65.4, 40.4, 33.4, 43.2],
+            data: data.race_chart.values || [],
             backgroundColor: [c.palette[0], c.palette[1], c.palette[2], c.palette[5]],
             borderRadius: 4,
             maxBarThickness: 80
@@ -338,16 +241,15 @@
       }));
     }
 
-    // 3. Father-Absence by Parent Education Quartile
     var ctxEdu = document.getElementById('chartEdu');
-    if (ctxEdu) {
+    if (ctxEdu && data.education_chart) {
       charts.push(new Chart(ctxEdu, {
         type: 'bar',
         data: {
-          labels: ['Q1 (low)', 'Q2', 'Q3', 'Q4 (high)'],
+          labels: data.education_chart.labels || [],
           datasets: [{
             label: 'Father-Absent (%)',
-            data: [46.0, 45.0, 39.9, 36.6],
+            data: data.education_chart.values || [],
             backgroundColor: [c.palette[3], c.palette[1], c.palette[2], c.palette[0]],
             borderRadius: 4,
             maxBarThickness: 80
@@ -373,16 +275,15 @@
       }));
     }
 
-    // 4. Children Without Resident Father (ACS 2024) — grouped bar
     var ctxAcsRace = document.getElementById('chartAcsRace');
-    if (ctxAcsRace) {
+    if (ctxAcsRace && data.acs_race_chart) {
       charts.push(new Chart(ctxAcsRace, {
         type: 'bar',
         data: {
-          labels: ['Black', 'Hispanic', 'Non-Black,\nnon-Hispanic', 'Overall'],
+          labels: data.acs_race_chart.labels || [],
           datasets: [{
             label: 'No Resident Father (%)',
-            data: [54.4, 32.0, 17.1, 25.6],
+            data: data.acs_race_chart.values || [],
             backgroundColor: [c.palette[0], c.palette[1], c.palette[2], c.palette[5]],
             borderRadius: 4,
             maxBarThickness: 80
@@ -408,16 +309,15 @@
       }));
     }
 
-    // 5. Father-Absence by Poverty Band (ACS 2024)
     var ctxPoverty = document.getElementById('chartPoverty');
-    if (ctxPoverty) {
+    if (ctxPoverty && data.acs_poverty_chart) {
       charts.push(new Chart(ctxPoverty, {
         type: 'bar',
         data: {
-          labels: ['Below 100%\npoverty', '100\u2013124%', '125\u2013149%', '150%+'],
+          labels: data.acs_poverty_chart.labels || [],
           datasets: [{
             label: 'No Resident Father (%)',
-            data: [59.2, 43.6, 39.6, 17.1],
+            data: data.acs_poverty_chart.values || [],
             backgroundColor: [c.palette[3], c.palette[1], c.palette[4], c.palette[2]],
             borderRadius: 4,
             maxBarThickness: 80
@@ -443,16 +343,15 @@
       }));
     }
 
-    // 6. Father-Absence by HH Income Quartile (ACS 2024)
     var ctxIncome = document.getElementById('chartIncome');
-    if (ctxIncome) {
+    if (ctxIncome && data.acs_income_chart) {
       charts.push(new Chart(ctxIncome, {
         type: 'bar',
         data: {
-          labels: ['Q1 (lowest)', 'Q2', 'Q3', 'Q4 (highest)'],
+          labels: data.acs_income_chart.labels || [],
           datasets: [{
             label: 'No Resident Father (%)',
-            data: [50.5, 23.9, 13.7, 7.6],
+            data: data.acs_income_chart.values || [],
             backgroundColor: [c.palette[3], c.palette[1], c.palette[2], c.palette[0]],
             borderRadius: 4,
             maxBarThickness: 80
@@ -478,16 +377,15 @@
       }));
     }
 
-    // 8a. Adjusted Earnings Gap by Race — horizontal bar
     var ctxEarningsRace = document.getElementById('chartEarningsRace');
-    if (ctxEarningsRace) {
+    if (ctxEarningsRace && data.earnings_race_chart) {
       charts.push(new Chart(ctxEarningsRace, {
         type: 'bar',
         data: {
-          labels: ['Black', 'Hispanic', 'Non-Black, non-Hispanic'],
+          labels: data.earnings_race_chart.labels || [],
           datasets: [{
             label: 'Adjusted earnings gap ($)',
-            data: [-8393, -7925, -17711],
+            data: data.earnings_race_chart.values || [],
             backgroundColor: [c.palette[0], c.palette[1], c.palette[2]],
             borderRadius: 4,
             maxBarThickness: 40
@@ -524,16 +422,15 @@
       }));
     }
 
-    // 8b. Adjusted g_proxy Gap by Race — horizontal bar
     var ctxGRace = document.getElementById('chartGRace');
-    if (ctxGRace) {
+    if (ctxGRace && data.g_race_chart) {
       charts.push(new Chart(ctxGRace, {
         type: 'bar',
         data: {
-          labels: ['Black', 'Hispanic', 'Non-Black, non-Hispanic'],
+          labels: data.g_race_chart.labels || [],
           datasets: [{
             label: 'Adjusted g_proxy gap (SD)',
-            data: [-0.147, -0.148, -0.230],
+            data: data.g_race_chart.values || [],
             backgroundColor: [c.palette[0], c.palette[1], c.palette[2]],
             borderRadius: 4,
             maxBarThickness: 40
@@ -571,9 +468,24 @@
     }
   }
 
-  dgDefaults();
-  buildCharts();
-  window.dgRebuild = function () { dgDefaults(); buildCharts(); };
+  function render(data) {
+    document.getElementById('femaleCardValue').textContent = (data.sex_cards || {}).female || 'unavailable';
+    document.getElementById('maleCardValue').textContent = (data.sex_cards || {}).male || 'unavailable';
+    document.getElementById('predictorsBody').innerHTML = (data.predictors || []).map(function (row) {
+      return '<tr><td>' + row.predictor + '</td><td class="num">' + row.odds_ratio + '</td><td class="num">' + row.p_value + '</td></tr>';
+    }).join('');
+    document.getElementById('heterogeneityBody').innerHTML = (data.heterogeneity_table || []).map(function (row) {
+      return '<tr><td>' + row.subgroup + '</td><td>' + row.outcome + '</td><td class="num">' + row.n + '</td><td class="num">' + row.raw_gap + '</td><td class="num">' + row.adjusted + '</td></tr>';
+    }).join('');
+    document.getElementById('heterogeneityInsight').textContent = data.insight || '';
+    dgDefaults();
+    buildCharts(data);
+    window.dgRebuild = function () { dgDefaults(); buildCharts(data); };
+  }
+
+  window.dgResults.load()
+    .then(function (payload) { render(window.dgResults.prevalence(payload)); })
+    .catch(function () {});
 })();
 </script>
 </body>

@@ -6,6 +6,7 @@
   <meta name="color-scheme" content="light dark">
   <title>Outcomes — dadgap</title>
   <script src="js/theme.js"></script>
+  <script src="js/results.js"></script>
   <link rel="stylesheet" href="css/style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
 </head>
@@ -57,48 +58,11 @@
           <th class="num">SE</th>
         </tr>
       </thead>
-      <tbody>
-        <tr>
-          <td>g_proxy (SD)</td>
-          <td class="num">8,982</td>
-          <td class="num">0.187</td>
-          <td class="num">&minus;0.186</td>
-          <td class="num highlight">&minus;0.373</td>
-          <td class="num">&minus;0.193</td>
-          <td class="num">0.023</td>
-        </tr>
-        <tr>
-          <td>Education years (2007)</td>
-          <td class="num">8,576</td>
-          <td class="num">13.86</td>
-          <td class="num">12.53</td>
-          <td class="num highlight">&minus;1.332</td>
-          <td class="num">&minus;1.160</td>
-          <td class="num">0.068</td>
-        </tr>
-        <tr>
-          <td>SAT math bin</td>
-          <td class="num">3,214</td>
-          <td class="num">0.573</td>
-          <td class="num">0.227</td>
-          <td class="num highlight">&minus;0.346</td>
-          <td class="num">&minus;0.156</td>
-          <td class="num">0.031</td>
-        </tr>
-        <tr>
-          <td>ACT bin</td>
-          <td class="num">2,896</td>
-          <td class="num">0.518</td>
-          <td class="num">0.216</td>
-          <td class="num highlight">&minus;0.302</td>
-          <td class="num">&minus;0.148</td>
-          <td class="num">0.034</td>
-        </tr>
-      </tbody>
+      <tbody id="cognitionBody"></tbody>
     </table>
 
     <div class="insight-box">
-      <p>Father-absent respondents score 0.37 SD lower on cognitive composite and complete 1.3 fewer years of education. After adjusting for race, sex, parental education, and other covariates, about half of the g_proxy gap (0.19 SD) and most of the education gap (1.16 years) persists.</p>
+      <p id="cognitionInsight"></p>
     </div>
   </section>
 
@@ -125,44 +89,7 @@
           <th class="num">Gap</th>
         </tr>
       </thead>
-      <tbody>
-        <tr>
-          <td>Black Female</td>
-          <td class="num">$53,579</td>
-          <td class="num">$43,975</td>
-          <td class="num highlight">$9,604</td>
-        </tr>
-        <tr>
-          <td>Black Male</td>
-          <td class="num">$58,497</td>
-          <td class="num">$46,339</td>
-          <td class="num highlight">$12,158</td>
-        </tr>
-        <tr>
-          <td>Hispanic Female</td>
-          <td class="num">$50,535</td>
-          <td class="num">$44,052</td>
-          <td class="num highlight">$6,483</td>
-        </tr>
-        <tr>
-          <td>Hispanic Male</td>
-          <td class="num">$66,143</td>
-          <td class="num">$57,287</td>
-          <td class="num highlight">$8,856</td>
-        </tr>
-        <tr>
-          <td>NBNH Female</td>
-          <td class="num">$65,024</td>
-          <td class="num">$47,898</td>
-          <td class="num highlight">$17,126</td>
-        </tr>
-        <tr>
-          <td>NBNH Male</td>
-          <td class="num">$89,417</td>
-          <td class="num">$69,564</td>
-          <td class="num highlight">$19,853</td>
-        </tr>
-      </tbody>
+      <tbody id="earningsSubgroupBody"></tbody>
     </table>
 
     <table class="data-table">
@@ -174,26 +101,7 @@
           <th class="num">Gap</th>
         </tr>
       </thead>
-      <tbody>
-        <tr>
-          <td>Mean earnings</td>
-          <td class="num">$70,784</td>
-          <td class="num">$51,731</td>
-          <td class="num highlight">$19,053</td>
-        </tr>
-        <tr>
-          <td>Employment rate</td>
-          <td class="num">83.0%</td>
-          <td class="num">75.3%</td>
-          <td class="num highlight">7.7 pp</td>
-        </tr>
-        <tr>
-          <td>Mean HH income</td>
-          <td class="num">$121,212</td>
-          <td class="num">$80,283</td>
-          <td class="num highlight">$40,929</td>
-        </tr>
-      </tbody>
+      <tbody id="overallGapBody"></tbody>
     </table>
   </section>
 
@@ -220,50 +128,7 @@
           <th>Significance</th>
         </tr>
       </thead>
-      <tbody>
-        <tr>
-          <td>Poor self-rated health</td>
-          <td class="num highlight">+0.059</td>
-          <td class="num">share</td>
-          <td>p &lt; 0.001</td>
-        </tr>
-        <tr>
-          <td>BMI (2011)</td>
-          <td class="num highlight">+0.687</td>
-          <td class="num">units</td>
-          <td>p &lt; 0.05</td>
-        </tr>
-        <tr>
-          <td>Obesity</td>
-          <td class="num highlight">+0.013</td>
-          <td class="num">share</td>
-          <td>n.s.</td>
-        </tr>
-        <tr>
-          <td>Smoking days/30</td>
-          <td class="num highlight">+2.573</td>
-          <td class="num">days</td>
-          <td>p &lt; 0.001</td>
-        </tr>
-        <tr>
-          <td>Marijuana days/30</td>
-          <td class="num highlight">+2.890</td>
-          <td class="num">days</td>
-          <td>p &lt; 0.001</td>
-        </tr>
-        <tr>
-          <td>Alcohol days/30</td>
-          <td class="num highlight">&minus;0.310</td>
-          <td class="num">days</td>
-          <td>n.s.</td>
-        </tr>
-        <tr>
-          <td>Binge drinking</td>
-          <td class="num highlight">+0.019</td>
-          <td class="num">share</td>
-          <td>n.s.</td>
-        </tr>
-      </tbody>
+      <tbody id="healthBody"></tbody>
     </table>
   </section>
 
@@ -290,20 +155,7 @@
           <th>Significance</th>
         </tr>
       </thead>
-      <tbody>
-        <tr>
-          <td>CES-D score</td>
-          <td class="num highlight">+0.788</td>
-          <td class="num">score</td>
-          <td>p &lt; 0.001</td>
-        </tr>
-        <tr>
-          <td>Elevated CES-D (&ge;16)</td>
-          <td class="num highlight">+0.013</td>
-          <td class="num">share</td>
-          <td>p &lt; 0.01</td>
-        </tr>
-      </tbody>
+      <tbody id="mentalBody"></tbody>
     </table>
   </section>
 
@@ -329,33 +181,7 @@
           <th class="num">Unit</th>
         </tr>
       </thead>
-      <tbody>
-        <tr>
-          <td>Ever married</td>
-          <td class="num highlight">&minus;0.048</td>
-          <td class="num">share</td>
-        </tr>
-        <tr>
-          <td>Currently married</td>
-          <td class="num highlight">&minus;0.100</td>
-          <td class="num">share</td>
-        </tr>
-        <tr>
-          <td>Total marriages</td>
-          <td class="num highlight">&minus;0.021</td>
-          <td class="num">count</td>
-        </tr>
-        <tr>
-          <td>Total bio children</td>
-          <td class="num highlight">+0.106</td>
-          <td class="num">count</td>
-        </tr>
-        <tr>
-          <td>Age first marriage</td>
-          <td class="num highlight">&minus;0.422</td>
-          <td class="num">years</td>
-        </tr>
-      </tbody>
+      <tbody id="familyBody"></tbody>
     </table>
   </section>
 
@@ -381,33 +207,7 @@
           <th class="num">Unit</th>
         </tr>
       </thead>
-      <tbody>
-        <tr>
-          <td>Schooling engagement</td>
-          <td class="num highlight">&minus;1.253</td>
-          <td class="num">months</td>
-        </tr>
-        <tr>
-          <td>K-12 enrollment</td>
-          <td class="num highlight">&minus;0.175</td>
-          <td class="num">months</td>
-        </tr>
-        <tr>
-          <td>College enrollment</td>
-          <td class="num highlight">&minus;1.088</td>
-          <td class="num">months</td>
-        </tr>
-        <tr>
-          <td>Any arrest</td>
-          <td class="num highlight">+0.023</td>
-          <td class="num">share</td>
-        </tr>
-        <tr>
-          <td>Any incarceration</td>
-          <td class="num highlight">+0.012</td>
-          <td class="num">share</td>
-        </tr>
-      </tbody>
+      <tbody id="eventTimeBody"></tbody>
     </table>
 
     <div class="warning-box">
@@ -439,319 +239,285 @@
   'use strict';
 
   var charts = [];
+  var currentData = null;
 
-  function fmt(v) { return '$' + v.toLocaleString(); }
-  function sign(v) { return (v >= 0 ? '+' : '') + v.toFixed(3); }
+  function usd(value) {
+    return window.dgResults.fmt.usd(value);
+  }
 
-  function buildCharts() {
+  function sign(value) {
+    var number = Number(value);
+    if (Number.isNaN(number)) { return 'unavailable'; }
+    return (number >= 0 ? '+' : '') + number.toFixed(3);
+  }
+
+  function fillTable(id, rows, columns) {
+    var body = document.getElementById(id);
+    if (!body) { return; }
+    body.innerHTML = '';
+    (rows || []).forEach(function (row) {
+      var tr = document.createElement('tr');
+      columns.forEach(function (column, index) {
+        var td = document.createElement('td');
+        td.textContent = row[column] == null ? 'unavailable' : row[column];
+        if (index > 0) { td.className = 'num'; }
+        tr.appendChild(td);
+      });
+      body.appendChild(tr);
+    });
+  }
+
+  function buildCharts(data) {
     var c = C();
 
     charts.forEach(function (ch) { ch.destroy(); });
     charts.length = 0;
 
-    /* ── Chart 1: Cognition & Education — horizontal bar ── */
-    var cogLabels = ['g_proxy (SD)', 'Education years', 'SAT math bin', 'ACT bin'];
-    var cogRaw    = [-0.373, -1.332, -0.346, -0.302];
-    var cogAdj    = [-0.193, -1.160, -0.156, -0.148];
+    if (data.cognition_chart) {
+      charts.push(new Chart(document.getElementById('chartCogEd'), {
+        type: 'bar',
+        data: {
+          labels: data.cognition_chart.labels || [],
+          datasets: [
+            {
+              label: 'Raw gap',
+              data: data.cognition_chart.raw || [],
+              backgroundColor: c.red,
+              borderRadius: 4,
+              maxBarThickness: 24
+            },
+            {
+              label: 'Adjusted',
+              data: data.cognition_chart.adjusted || [],
+              backgroundColor: c.accent,
+              borderRadius: 4,
+              maxBarThickness: 24
+            }
+          ]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: true,
+          plugins: {
+            legend: { labels: { color: c.textSec, boxWidth: 14, padding: 16 } },
+            tooltip: { callbacks: { label: function (tip) { return tip.dataset.label + ': ' + sign(tip.raw); } } }
+          },
+          scales: {
+            x: { grid: { color: c.grid }, ticks: { color: c.textSec } },
+            y: { grid: { display: false }, ticks: { color: c.textSec } }
+          }
+        }
+      }));
+    }
 
-    charts.push(new Chart(document.getElementById('chartCogEd'), {
-      type: 'bar',
-      data: {
-        labels: cogLabels,
-        datasets: [
-          {
-            label: 'Raw gap',
-            data: cogRaw,
-            backgroundColor: c.red,
+    if (data.earnings_chart) {
+      charts.push(new Chart(document.getElementById('chartGapRaceSex'), {
+        type: 'bar',
+        data: {
+          labels: data.earnings_chart.labels || [],
+          datasets: [{
+            label: 'Earnings Gap ($)',
+            data: data.earnings_chart.values || [],
+            backgroundColor: c.palette.slice(0, 6),
+            borderRadius: 4,
+            maxBarThickness: 60
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          plugins: {
+            legend: { display: false },
+            tooltip: { callbacks: { label: function (tip) { return usd(tip.raw); } } }
+          },
+          scales: {
+            y: { grid: { color: c.grid }, ticks: { color: c.textSec, callback: function (v) { return '$' + (v / 1000) + 'K'; } } },
+            x: { grid: { display: false }, ticks: { color: c.textSec } }
+          }
+        }
+      }));
+    }
+
+    if (data.health_chart) {
+      charts.push(new Chart(document.getElementById('chartHealth'), {
+        type: 'bar',
+        data: {
+          labels: data.health_chart.labels || [],
+          datasets: [{
+            label: 'Adj. Coefficient',
+            data: data.health_chart.values || [],
+            backgroundColor: (data.health_chart.values || []).map(function (value) { return value > 0 ? c.red : c.green; }),
             borderRadius: 4,
             maxBarThickness: 24
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: true,
+          plugins: {
+            legend: { display: false },
+            tooltip: { callbacks: { label: function (tip) { return sign(tip.raw); } } }
           },
-          {
-            label: 'Adjusted',
-            data: cogAdj,
-            backgroundColor: c.accent,
+          scales: {
+            x: { grid: { color: c.grid }, ticks: { color: c.textSec } },
+            y: { grid: { display: false }, ticks: { color: c.textSec } }
+          }
+        }
+      }));
+    }
+
+    if (data.mental_chart) {
+      charts.push(new Chart(document.getElementById('chartMental'), {
+        type: 'bar',
+        data: {
+          labels: data.mental_chart.labels || [],
+          datasets: [{
+            label: 'Adj. Coefficient',
+            data: data.mental_chart.values || [],
+            backgroundColor: (data.mental_chart.values || []).map(function (value, index) {
+              return value > 0 ? (index === 0 ? c.red : c.orange) : c.green;
+            }),
+            borderRadius: 4,
+            maxBarThickness: 60
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          plugins: {
+            legend: { display: false },
+            tooltip: { callbacks: { label: function (tip) { return sign(tip.raw); } } }
+          },
+          scales: {
+            y: { grid: { color: c.grid }, ticks: { color: c.textSec } },
+            x: { grid: { display: false }, ticks: { color: c.textSec } }
+          }
+        }
+      }));
+    }
+
+    if (data.family_chart) {
+      charts.push(new Chart(document.getElementById('chartFamily'), {
+        type: 'bar',
+        data: {
+          labels: data.family_chart.labels || [],
+          datasets: [{
+            label: 'Adj. Coefficient',
+            data: data.family_chart.values || [],
+            backgroundColor: (data.family_chart.values || []).map(function (value) { return value > 0 ? c.orange : c.accent; }),
             borderRadius: 4,
             maxBarThickness: 24
-          }
-        ]
-      },
-      options: {
-        indexAxis: 'y',
-        responsive: true,
-        maintainAspectRatio: true,
-        plugins: {
-          legend: { labels: { color: c.textSec, boxWidth: 14, padding: 16 } },
-          tooltip: {
-            callbacks: {
-              label: function (tip) {
-                return tip.dataset.label + ': ' + tip.raw.toFixed(3);
-              }
-            }
-          }
+          }]
         },
-        scales: {
-          x: {
-            grid: { color: c.grid },
-            ticks: { color: c.textSec }
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: true,
+          plugins: {
+            legend: { display: false },
+            tooltip: { callbacks: { label: function (tip) { return sign(tip.raw); } } }
           },
-          y: {
-            grid: { display: false },
-            ticks: { color: c.textSec }
+          scales: {
+            x: { grid: { color: c.grid }, ticks: { color: c.textSec } },
+            y: { grid: { display: false }, ticks: { color: c.textSec } }
           }
         }
-      }
-    }));
+      }));
+    }
 
-    /* ── Chart 2: Earnings Gap by Race/Sex — grouped bar ── */
-    var groups = ['Black F', 'Black M', 'Hisp F', 'Hisp M', 'NBNH F', 'NBNH M'];
-    var gaps = [9604, 12158, 6483, 8856, 17126, 19853];
-
-    charts.push(new Chart(document.getElementById('chartGapRaceSex'), {
-      type: 'bar',
-      data: {
-        labels: groups,
-        datasets: [{
-          label: 'Earnings Gap ($)',
-          data: gaps,
-          backgroundColor: c.palette.slice(0, 6),
-          borderRadius: 4,
-          maxBarThickness: 60
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: true,
-        plugins: {
-          legend: { display: false },
-          tooltip: { callbacks: { label: function (tip) { return fmt(tip.raw); } } }
+    if (data.event_time_chart) {
+      charts.push(new Chart(document.getElementById('chartEventTime'), {
+        type: 'bar',
+        data: {
+          labels: data.event_time_chart.labels || [],
+          datasets: [{
+            label: 'Coefficient',
+            data: data.event_time_chart.values || [],
+            backgroundColor: (data.event_time_chart.values || []).map(function (value) { return value < 0 ? c.red : c.orange; }),
+            borderRadius: 4,
+            maxBarThickness: 24
+          }]
         },
-        scales: {
-          y: {
-            beginAtZero: true,
-            grid: { color: c.grid },
-            ticks: { color: c.textSec, callback: function (v) { return '$' + (v / 1000) + 'K'; } }
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: true,
+          plugins: {
+            legend: { display: false },
+            tooltip: { callbacks: { label: function (tip) { return sign(tip.raw); } } }
           },
-          x: { grid: { display: false }, ticks: { color: c.textSec } }
-        }
-      }
-    }));
-
-    /* ── Chart 3: Health & Substance — horizontal bar ───── */
-    var hlLabels = [
-      'Poor self-rated health',
-      'BMI (2011)',
-      'Obesity',
-      'Smoking days/30',
-      'Marijuana days/30',
-      'Alcohol days/30',
-      'Binge drinking'
-    ];
-    var hlData = [0.059, 0.687, 0.013, 2.573, 2.890, -0.310, 0.019];
-    var hlColors = hlData.map(function (v) { return v > 0 ? c.red : c.green; });
-
-    charts.push(new Chart(document.getElementById('chartHealth'), {
-      type: 'bar',
-      data: {
-        labels: hlLabels,
-        datasets: [{
-          label: 'Adj. Coefficient',
-          data: hlData,
-          backgroundColor: hlColors,
-          borderRadius: 4,
-          maxBarThickness: 24
-        }]
-      },
-      options: {
-        indexAxis: 'y',
-        responsive: true,
-        maintainAspectRatio: true,
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label: function (tip) { return sign(tip.raw); }
-            }
-          }
-        },
-        scales: {
-          x: {
-            grid: { color: c.grid },
-            ticks: { color: c.textSec }
-          },
-          y: {
-            grid: { display: false },
-            ticks: { color: c.textSec }
+          scales: {
+            x: { grid: { color: c.grid }, ticks: { color: c.textSec } },
+            y: { grid: { display: false }, ticks: { color: c.textSec } }
           }
         }
-      }
-    }));
+      }));
+    }
 
-    /* ── Chart 4: Mental Health — bar ─────────────────── */
-    charts.push(new Chart(document.getElementById('chartMental'), {
-      type: 'bar',
-      data: {
-        labels: ['CES-D score', 'Elevated CES-D (\u226516)'],
-        datasets: [{
-          label: 'Adj. Coefficient',
-          data: [0.788, 0.013],
-          backgroundColor: [c.red, c.orange],
-          borderRadius: 4,
-          maxBarThickness: 60
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: true,
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label: function (tip) { return sign(tip.raw); }
-            }
-          }
+    if (data.benchmark_chart) {
+      charts.push(new Chart(document.getElementById('chartBenchmarks'), {
+        type: 'bar',
+        data: {
+          labels: data.benchmark_chart.labels || [],
+          datasets: [{
+            label: 'Mean Earnings ($)',
+            data: data.benchmark_chart.values || [],
+            backgroundColor: [c.accent, c.green, c.orange, c.teal, c.palette[4]],
+            borderRadius: 4,
+            maxBarThickness: 70
+          }]
         },
-        scales: {
-          y: {
-            beginAtZero: true,
-            grid: { color: c.grid },
-            ticks: { color: c.textSec }
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          plugins: {
+            legend: { display: false },
+            tooltip: { callbacks: { label: function (tip) { return usd(tip.raw); } } }
           },
-          x: { grid: { display: false }, ticks: { color: c.textSec } }
-        }
-      }
-    }));
-
-    /* ── Chart 5: Family Formation — horizontal bar ────── */
-    var famLabels = [
-      'Ever married',
-      'Currently married',
-      'Total marriages',
-      'Total bio children',
-      'Age first marriage'
-    ];
-    var famData = [-0.048, -0.100, -0.021, 0.106, -0.422];
-    var famColors = famData.map(function (v) { return v > 0 ? c.orange : c.accent; });
-
-    charts.push(new Chart(document.getElementById('chartFamily'), {
-      type: 'bar',
-      data: {
-        labels: famLabels,
-        datasets: [{
-          label: 'Adj. Coefficient',
-          data: famData,
-          backgroundColor: famColors,
-          borderRadius: 4,
-          maxBarThickness: 24
-        }]
-      },
-      options: {
-        indexAxis: 'y',
-        responsive: true,
-        maintainAspectRatio: true,
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label: function (tip) { return sign(tip.raw); }
-            }
-          }
-        },
-        scales: {
-          x: {
-            grid: { color: c.grid },
-            ticks: { color: c.textSec }
-          },
-          y: {
-            grid: { display: false },
-            ticks: { color: c.textSec }
+          scales: {
+            y: {
+              beginAtZero: true,
+              grid: { color: c.grid },
+              ticks: { color: c.textSec, callback: function (v) { return '$' + (v / 1000) + 'K'; } }
+            },
+            x: { grid: { display: false }, ticks: { color: c.textSec } }
           }
         }
-      }
-    }));
-
-    /* ── Chart 6: Event-Time — horizontal bar ─────────── */
-    var etLabels = [
-      'Schooling engagement',
-      'K-12 enrollment',
-      'College enrollment',
-      'Any arrest',
-      'Any incarceration'
-    ];
-    var etData = [-1.253, -0.175, -1.088, 0.023, 0.012];
-    var etColors = etData.map(function (v) { return v < 0 ? c.red : c.orange; });
-
-    charts.push(new Chart(document.getElementById('chartEventTime'), {
-      type: 'bar',
-      data: {
-        labels: etLabels,
-        datasets: [{
-          label: 'Coefficient',
-          data: etData,
-          backgroundColor: etColors,
-          borderRadius: 4,
-          maxBarThickness: 24
-        }]
-      },
-      options: {
-        indexAxis: 'y',
-        responsive: true,
-        maintainAspectRatio: true,
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label: function (tip) { return sign(tip.raw); }
-            }
-          }
-        },
-        scales: {
-          x: {
-            grid: { color: c.grid },
-            ticks: { color: c.textSec }
-          },
-          y: {
-            grid: { display: false },
-            ticks: { color: c.textSec }
-          }
-        }
-      }
-    }));
-
-    /* ── Chart 7: Benchmarks — bar ────────────────────── */
-    charts.push(new Chart(document.getElementById('chartBenchmarks'), {
-      type: 'bar',
-      data: {
-        labels: ['NLSY97 Overall', 'ACS PUMS 2024', 'CPS ASEC 2023', 'CPS ASEC 2025'],
-        datasets: [{
-          label: 'Mean Earnings ($)',
-          data: [63003, 55894, 53341, 58996],
-          backgroundColor: [c.accent, c.green, c.orange, c.teal],
-          borderRadius: 4,
-          maxBarThickness: 70
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: true,
-        plugins: {
-          legend: { display: false },
-          tooltip: { callbacks: { label: function (tip) { return fmt(tip.raw); } } }
-        },
-        scales: {
-          y: {
-            beginAtZero: true,
-            grid: { color: c.grid },
-            ticks: { color: c.textSec, callback: function (v) { return '$' + (v / 1000) + 'K'; } }
-          },
-          x: { grid: { display: false }, ticks: { color: c.textSec } }
-        }
-      }
-    }));
+      }));
+    }
   }
 
-  dgDefaults();
-  buildCharts();
-  window.dgRebuild = function () { dgDefaults(); buildCharts(); };
+  function hydrate(data) {
+    currentData = data || {};
+    fillTable('cognitionBody', currentData.cognition_table, ['measure', 'n', 'present_mean', 'absent_mean', 'raw_gap', 'adjusted', 'se']);
+    fillTable('earningsSubgroupBody', currentData.earnings_subgroup_table, ['group', 'father_present', 'father_absent', 'gap']);
+    fillTable('overallGapBody', currentData.overall_gap_table, ['outcome', 'father_present', 'father_absent', 'gap']);
+    fillTable('healthBody', currentData.health_table, ['outcome', 'adjusted', 'unit', 'significance']);
+    fillTable('mentalBody', currentData.mental_table, ['outcome', 'adjusted', 'unit', 'significance']);
+    fillTable('familyBody', currentData.family_table, ['outcome', 'adjusted', 'unit']);
+    fillTable('eventTimeBody', currentData.event_time_table, ['outcome', 'coefficient', 'unit']);
+    var insight = document.getElementById('cognitionInsight');
+    if (insight) {
+      insight.textContent = currentData.cognition_insight || 'Outcome artifact data is unavailable.';
+    }
+    dgDefaults();
+    buildCharts(currentData);
+  }
+
+  window.dgResults.load()
+    .then(function (payload) {
+      hydrate(window.dgResults.outcomes(payload));
+    })
+    .catch(function (error) {
+      window.dgResults.showError(error.message);
+    });
+
+  window.dgRebuild = function () {
+    dgDefaults();
+    buildCharts(currentData || {});
+  };
 })();
 </script>
 </body>

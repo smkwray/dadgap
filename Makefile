@@ -3,7 +3,7 @@ CONFIG ?= config/user_inputs.local.yaml
 
 install:
 	$(PYTHON) -m pip install --upgrade pip
-	$(PYTHON) -m pip install -e ".[dev,ml]"
+	$(PYTHON) -m pip install -e ".[dev,analysis]"
 
 print-questions:
 	$(PYTHON) -m father_longrun print-questions
@@ -13,6 +13,9 @@ check-config:
 
 inspect-nlsy:
 	$(PYTHON) -m father_longrun inspect-nlsy --config $(CONFIG)
+
+doctor:
+	$(PYTHON) -m father_longrun doctor --config $(CONFIG)
 
 build-nlsy-pilot:
 	$(PYTHON) -m father_longrun build-nlsy-pilot --config $(CONFIG)
@@ -79,6 +82,25 @@ build-cross-cohort-benchmarks:
 
 build-results-appendix:
 	$(PYTHON) -m father_longrun build-results-appendix --config $(CONFIG)
+
+build-synthesis:
+	$(PYTHON) -m father_longrun build-synthesis --config $(CONFIG)
+
+public-results:
+	$(PYTHON) -m father_longrun build-fatherlessness-profiles --config $(CONFIG)
+	$(PYTHON) -m father_longrun build-nlsy97-longitudinal-panel --config $(CONFIG)
+	$(PYTHON) -m father_longrun build-quasi-causal-scaffold --config $(CONFIG)
+	$(PYTHON) -m father_longrun build-benchmarks --config $(CONFIG)
+	$(PYTHON) -m father_longrun build-public-microdata --config $(CONFIG)
+	$(PYTHON) -m father_longrun build-public-benchmark-profiles --config $(CONFIG)
+	$(PYTHON) -m father_longrun build-cross-cohort-benchmarks --config $(CONFIG)
+	$(PYTHON) -m father_longrun build-results-appendix --config $(CONFIG)
+	$(PYTHON) -m father_longrun build-synthesis --config $(CONFIG)
+
+prepush:
+	$(PYTHON) -m pytest -q
+	$(PYTHON) -m father_longrun doctor --config $(CONFIG)
+	$(PYTHON) -m father_longrun --help >/dev/null
 
 test:
 	pytest -q

@@ -12,6 +12,13 @@ from urllib.request import Request, urlopen
 
 import pandas as pd
 
+from father_longrun.pipelines.harmonize import (
+    build_poverty_band_from_percent,
+    build_poverty_band_from_ratio,
+    map_public_race_ethnicity_3cat,
+    map_public_sex,
+    standardize_public_profile_frame,
+)
 from father_longrun.registry import EXTERNAL_SOURCE_REGISTRY, ExternalSourceMeta
 
 
@@ -626,26 +633,6 @@ def _coerce_float(series: pd.Series) -> pd.Series:
     return pd.to_numeric(series, errors="coerce")
 
 
-def _map_sex(series: pd.Series) -> pd.Series:
-    return _coerce_float(series).map({1: "MALE", 2: "FEMALE"}).astype("string")
-
-
-def _map_race_ethnicity_3cat(*, race: pd.Series, hispanic: pd.Series, source: str) -> pd.Series:
-    race_num = _coerce_float(race)
-    hispanic_num = _coerce_float(hispanic)
-    if source in {"sipp", "acs_pums"}:
-        hispanic_indicator = hispanic_num.gt(1)
-        black_indicator = race_num.eq(2)
-    else:
-        hispanic_indicator = hispanic_num.ne(0)
-        black_indicator = race_num.eq(200)
-
-    values = pd.Series("NON-BLACK, NON-HISPANIC", index=race.index, dtype="string")
-    values.loc[black_indicator.fillna(False)] = "BLACK"
-    values.loc[hispanic_indicator.fillna(False)] = "HISPANIC"
-    return values
-
-
 def _weighted_mean(values: pd.Series, weights: pd.Series) -> float | None:
     frame = pd.DataFrame({"value": _coerce_float(values), "weight": _coerce_float(weights)})
     frame = frame.dropna()
@@ -724,9 +711,9 @@ def _harmonize_sipp_profiles(frame: pd.DataFrame) -> pd.DataFrame:
             "person_weight": weight,
             "age": age,
             "adult_window_primary": age.between(25, 40, inclusive="both"),
-            "sex": _map_sex(frame["sex_code"]),
+            "sex": map_public_sex(frame["sex_code"]),
             "female": _coerce_float(frame["sex_code"]).eq(2),
-            "race_ethnicity_3cat": _map_race_ethnicity_3cat(
+            "race_ethnicity_3cat": map_public_race_ethnicity_3cat(
                 race=frame["race_code"],
                 hispanic=frame["hispanic_code"],
                 source="sipp",
@@ -745,12 +732,9 @@ def _harmonize_sipp_profiles(frame: pd.DataFrame) -> pd.DataFrame:
             "poverty_band": pd.Series(pd.NA, index=frame.index, dtype="string"),
         }
     )
-    harmonized["poverty_band"] = (
-        pd.Series(pd.NA, index=frame.index, dtype="string")
-        .mask(poverty_ratio.lt(1), "BELOW_100_PCT")
-        .mask(poverty_ratio.ge(1) & poverty_ratio.lt(1.25), "100_124_PCT")
-        .mask(poverty_ratio.ge(1.25) & poverty_ratio.lt(1.5), "125_149_PCT")
-        .mask(poverty_ratio.ge(1.5), "150_PLUS_PCT")
+    harmonized["poverty_band"] = build_poverty_band_from_ratio(
+        poverty_ratio,
+        missing_label=pd.NA,
     )
     return harmonized
 
@@ -758,14 +742,11 @@ def _harmonize_sipp_profiles(frame: pd.DataFrame) -> pd.DataFrame:
 def _harmonize_cps_profiles(frame: pd.DataFrame) -> pd.DataFrame:
     age = _coerce_float(frame["age"])
     poverty_code = _coerce_float(frame["poverty_percent_code"])
-    poverty_band = poverty_code.map(
-        {
-            10: "BELOW_100_PCT",
-            21: "100_124_PCT",
-            22: "125_149_PCT",
-            23: "150_PLUS_PCT",
-        }
-    ).astype("string")
+    poverty_band = pd.Series(pd.NA, index=frame.index, dtype="string")
+    poverty_band.loc[poverty_code.eq(10)] = "BELOW_100_PCT"
+    poverty_band.loc[poverty_code.eq(21)] = "100_124_PCT"
+    poverty_band.loc[poverty_code.eq(22)] = "125_149_PCT"
+    poverty_band.loc[poverty_code.eq(23)] = "150_PLUS_PCT"
     return pd.DataFrame(
         {
             "source": "cps_asec",
@@ -775,9 +756,9 @@ def _harmonize_cps_profiles(frame: pd.DataFrame) -> pd.DataFrame:
             "person_weight": _coerce_float(frame["person_weight"]),
             "age": age,
             "adult_window_primary": age.between(25, 40, inclusive="both"),
-            "sex": _map_sex(frame["sex_code"]),
+            "sex": map_public_sex(frame["sex_code"]),
             "female": _coerce_float(frame["sex_code"]).eq(2),
-            "race_ethnicity_3cat": _map_race_ethnicity_3cat(
+            "race_ethnicity_3cat": map_public_race_ethnicity_3cat(
                 race=frame["race_code"],
                 hispanic=frame["hispanic_code"],
                 source="cps_asec",
@@ -811,9 +792,9 @@ def _harmonize_acs_profiles(frame: pd.DataFrame) -> pd.DataFrame:
             "person_weight": _coerce_float(frame["person_weight"]),
             "age": age,
             "adult_window_primary": age.between(25, 40, inclusive="both"),
-            "sex": _map_sex(frame["sex_code"]),
+            "sex": map_public_sex(frame["sex_code"]),
             "female": _coerce_float(frame["sex_code"]).eq(2),
-            "race_ethnicity_3cat": _map_race_ethnicity_3cat(
+            "race_ethnicity_3cat": map_public_race_ethnicity_3cat(
                 race=frame["race_code"],
                 hispanic=frame["hispanic_code"],
                 source="acs_pums",
@@ -829,70 +810,13 @@ def _harmonize_acs_profiles(frame: pd.DataFrame) -> pd.DataFrame:
             "family_income": _coerce_float(frame["family_income"]),
             "poverty_ratio": poverty_ratio,
             "below_poverty": poverty_percent.lt(100),
-            "poverty_band": (
-                pd.Series(pd.NA, index=frame.index, dtype="string")
-                .mask(poverty_percent.lt(100), "BELOW_100_PCT")
-                .mask(poverty_percent.ge(100) & poverty_percent.lt(125), "100_124_PCT")
-                .mask(poverty_percent.ge(125) & poverty_percent.lt(150), "125_149_PCT")
-                .mask(poverty_percent.ge(150), "150_PLUS_PCT")
-            ),
+            "poverty_band": build_poverty_band_from_percent(poverty_percent, missing_label=pd.NA),
         }
     )
 
 
 def _standardize_public_profile_frame(frame: pd.DataFrame) -> pd.DataFrame:
-    columns = [
-        "source",
-        "source_dataset",
-        "reference_year",
-        "measure_period",
-        "person_weight",
-        "age",
-        "adult_window_primary",
-        "sex",
-        "female",
-        "race_ethnicity_3cat",
-        "education_code",
-        "relationship_to_reference_code",
-        "marital_path_code",
-        "employment_status_code",
-        "employment",
-        "earnings",
-        "person_income",
-        "household_income",
-        "family_income",
-        "poverty_ratio",
-        "below_poverty",
-        "poverty_band",
-    ]
-    dtype_map = {
-        "source": "string",
-        "source_dataset": "string",
-        "reference_year": "Int64",
-        "measure_period": "string",
-        "person_weight": "Float64",
-        "age": "Float64",
-        "adult_window_primary": "boolean",
-        "sex": "string",
-        "female": "boolean",
-        "race_ethnicity_3cat": "string",
-        "education_code": "Float64",
-        "relationship_to_reference_code": "Float64",
-        "marital_path_code": "Float64",
-        "employment_status_code": "Float64",
-        "employment": "boolean",
-        "earnings": "Float64",
-        "person_income": "Float64",
-        "household_income": "Float64",
-        "family_income": "Float64",
-        "poverty_ratio": "Float64",
-        "below_poverty": "boolean",
-        "poverty_band": "string",
-    }
-    standardized = frame.reindex(columns=columns).copy()
-    for column, dtype in dtype_map.items():
-        standardized[column] = standardized[column].astype(dtype)
-    return standardized
+    return standardize_public_profile_frame(frame)
 
 
 def _income_band(series: pd.Series) -> pd.Series:
@@ -925,8 +849,8 @@ def _acs_child_context(
     child["age"] = _coerce_float(child["age"])
     child["parent_status_code"] = _coerce_float(child["parent_status_code"])
     child = child.loc[child["age"].lt(18) & child["parent_status_code"].isin(ACS_ESP_LABELS)].copy()
-    child["sex"] = _map_sex(child["sex_code"])
-    child["race_ethnicity_3cat"] = _map_race_ethnicity_3cat(
+    child["sex"] = map_public_sex(child["sex_code"])
+    child["race_ethnicity_3cat"] = map_public_race_ethnicity_3cat(
         race=child["race_code"],
         hispanic=child["hispanic_code"],
         source="acs_pums",
@@ -939,12 +863,10 @@ def _acs_child_context(
     child["resident_father_present_proxy"] = child["parent_status_code"].isin([1, 2, 3, 4, 5, 6]).astype("boolean")
     child["resident_father_absent_proxy"] = child["parent_status_code"].isin([7, 8]).astype("boolean")
     poverty_percent = _coerce_float(child["poverty_percent_ratio"])
-    child["poverty_band"] = (
-        pd.Series("missing", index=child.index, dtype="string")
-        .mask(poverty_percent.lt(100), "below_100_pct")
-        .mask(poverty_percent.ge(100) & poverty_percent.lt(125), "100_124_pct")
-        .mask(poverty_percent.ge(125) & poverty_percent.lt(150), "125_149_pct")
-        .mask(poverty_percent.ge(150), "150_plus_pct")
+    child["poverty_band"] = build_poverty_band_from_percent(
+        poverty_percent,
+        missing_label="missing",
+        lowercase=True,
     )
     child["household_income_band"] = _income_band(child["household_income"])
     child["sex_x_race_ethnicity"] = child["sex"].fillna("missing") + " | " + child["race_ethnicity_3cat"].fillna("missing")
@@ -1242,7 +1164,7 @@ def _nlsy97_benchmark_profiles(processed_root: Path) -> pd.DataFrame:
     nlsy97 = pd.read_parquet(processed_root / "nlsy" / "nlsy97_analysis_ready.parquet").copy()
     age_2021 = 2021 - _coerce_float(nlsy97["birth_year"])
     employment = _clean_binary_employment(nlsy97["employment_2021"])
-    sex = _map_sex(nlsy97["sex_raw"])
+    sex = map_public_sex(nlsy97["sex_raw"])
     base = pd.DataFrame(
         {
             "source": "nlsy97",

@@ -10,6 +10,11 @@ dadgap builds analysis-ready datasets from longitudinal surveys (NLSY79, NLSY97,
 
 The pipeline is structured in phases: cohort-specific data ingestion, variable harmonization, within-cohort analysis, and cross-cohort synthesis. Each phase produces structured artifacts (parquet files, CSV tables, markdown diagnostics) that are version-controlled and reproducible.
 
+The repo currently tracks a curated public artifact set under `outputs/tables/` and `outputs/manifests/`. Additional artifacts are generated locally by the CLI and make targets below. The appendix contract is materialized by `father-longrun build-results-appendix`, which refreshes `outputs/manifests/results_appendix_manifest.csv` and `outputs/manifests/results.json`.
+
+The static site in `docs/` now reads from a derived site payload at `docs/results.json`. That file is generated from the canonical appendix and synthesis artifacts rather than being edited by hand.
+Both JSON files now carry schema/provenance metadata so reviewers can verify what generated the public site and artifact surface.
+
 ## Results
 
 All estimates below are descriptive associations from public-use data, not causal effects. Source tables are in `outputs/tables/`.
@@ -200,13 +205,30 @@ cp .env.example .env.local
 # 4. Validate setup
 father-longrun check-config --config config/user_inputs.local.yaml
 father-longrun source-status
+father-longrun doctor --config config/user_inputs.local.yaml
+make prepush
 ```
 
-Requires Python 3.10+. Install with analysis and ML extras:
+`father-longrun` loads `.env.local` from the repo root by default, and relative paths in `config/user_inputs.local.yaml` are resolved relative to the repo root.
+
+Requires Python 3.10+. Default install is the lighter analysis stack:
 
 ```bash
-pip install -e ".[dev,ml]"
+pip install -e ".[dev,analysis]"
 ```
+
+Install ML extras separately only when needed:
+
+```bash
+pip install -e ".[ml]"
+```
+
+## Naming
+
+- Repo / project name: `dadgap`
+- Python package: `father_longrun`
+- CLI: `father-longrun`
+- Distribution package: `fatherlessness-longrun-public-data`
 
 ## Build sequence
 
@@ -232,9 +254,19 @@ make build-cross-cohort-benchmarks
 
 # Final output synthesis
 make build-results-appendix
+make build-synthesis
+make public-results
 ```
 
 All commands accept `CONFIG=path/to/config.yaml`. Default is `config/user_inputs.local.yaml`.
+
+`build-results-appendix` now materializes stable frontend/doc tables for NLSY97 fatherlessness prevalence, adult outcome gaps, observed `g_proxy` and educational milestone gaps, preferred near-term education/crime/work contrasts, health and substance outcomes, mental health, family formation, occupation/job-quality summaries, heterogeneity tables, residualized subgroup-gap diagnostics, ACS child father-presence context, and public benchmark context.
+
+`build-synthesis` consumes the appendix and cross-cohort benchmark artifacts and emits a standardized cross-cohort summary CSV, a forest-plot-ready CSV, and a synthesis memo under `outputs/manifests/`. It also regenerates the site-facing `docs/results.json` payload used by the static pages.
+
+`public-results` is the one-command refresh path for the public artifact surface: appendix tables, synthesis outputs, and the derived `docs/results.json` payload.
+
+`make prepush` is the final local review gate. It runs the full test suite, validates the artifact contract with `father-longrun doctor`, and smoke-checks the CLI entrypoint.
 
 Run `make test` to execute the test suite.
 
@@ -271,7 +303,7 @@ Father absence is coded from household roster and family-structure survey items 
 7. Father deceased
 8. Other / unknown
 
-These categories are constructed separately for each cohort, then harmonized using a common variable library. See [METHODS.md](METHODS.md) for identification strategy and modeling details.
+These categories are constructed separately for each cohort, then aligned through cohort-specific logic plus a smaller shared harmonization helper layer for benchmark/profile outputs. See [METHODS.md](METHODS.md) for identification strategy and modeling details.
 
 ## Key limitations
 

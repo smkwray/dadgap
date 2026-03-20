@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
+import json
 from pathlib import Path
 
+import pandas as pd
 import typer
 from rich.console import Console
 from rich.table import Table
@@ -17,6 +19,11 @@ from father_longrun.config import (
 )
 from father_longrun.models.ml import build_ml_benchmarks
 from father_longrun.models.quasi_causal import build_quasi_causal_scaffold
+from father_longrun.pipelines.contracts import (
+    validate_canonical_results_payload,
+    validate_manifest_frame_columns,
+    validate_site_results_payload,
+)
 from father_longrun.pipelines.nlsy import (
     build_backbone_scaffold,
     build_nlsy_pilot,
@@ -44,6 +51,7 @@ from father_longrun.pipelines.public_benchmarks import (
     source_statuses,
 )
 from father_longrun.pipelines.reporting import build_results_appendix
+from father_longrun.pipelines.synthesize import build_synthesis
 from father_longrun.questions import render_questions_markdown
 
 app = typer.Typer(add_completion=False, no_args_is_help=True)
@@ -131,6 +139,107 @@ def _load_optional_config(config: Path | None) -> dict[str, object]:
     return load_yaml(config)
 
 
+def _doctor_rows(config: Path | None) -> tuple[list[tuple[str, str, str]], int]:
+    rows: list[tuple[str, str, str]] = []
+    failures = 0
+    project_root = Path.cwd()
+    env_path = project_root / ".env.local"
+    if env_path.exists():
+        rows.append(("env_file", "pass", str(env_path)))
+    else:
+        rows.append(("env_file", "warn", f"Optional file not found: {env_path}"))
+
+    if config is None or not config.exists():
+        rows.append(("config_file", "fail", f"Config file not found: {config}"))
+        failures += 1
+        runtime_paths = resolve_runtime_paths({})
+    else:
+        rows.append(("config_file", "pass", str(config)))
+        data = load_yaml(config)
+        checks = validate_paths(data)
+        missing_paths = [item for item in checks if not item.exists]
+        blocking_missing_paths = [item for item in missing_paths if item.key != "paths.cache_root"]
+        warning_missing_paths = [item for item in missing_paths if item.key == "paths.cache_root"]
+        if blocking_missing_paths:
+            failures += 1
+            rows.append(("config_paths", "fail", f"{len(blocking_missing_paths)} required path(s) missing or placeholder"))
+            for item in blocking_missing_paths[:5]:
+                rows.append((f"path:{item.key}", "fail", item.raw_value or "<empty>"))
+        else:
+            rows.append(("config_paths", "pass", f"{len(checks)} configured path(s) validated"))
+        for item in warning_missing_paths[:5]:
+            rows.append((f"path:{item.key}", "warn", f"Optional cache path will be created on demand: {item.raw_value or '<empty>'}"))
+        runtime_paths = resolve_runtime_paths(data)
+
+    manifests_root = runtime_paths["outputs_root"] / "manifests"
+    manifest_path = manifests_root / "results_appendix_manifest.csv"
+    canonical_results_path = manifests_root / "results.json"
+    synthesis_summary_path = manifests_root / "cross_cohort_synthesis_summary.csv"
+    synthesis_forest_path = manifests_root / "cross_cohort_synthesis_forest_ready.csv"
+    synthesis_memo_path = manifests_root / "cross_cohort_synthesis.md"
+    docs_results_path = project_root / "docs" / "results.json"
+
+    if manifest_path.exists():
+        try:
+            manifest_frame = pd.read_csv(manifest_path)
+            manifest_errors = validate_manifest_frame_columns(list(manifest_frame.columns))
+            if manifest_errors:
+                failures += 1
+                rows.append(("appendix_manifest", "fail", "; ".join(manifest_errors)))
+            else:
+                rows.append(("appendix_manifest", "pass", str(manifest_path)))
+        except Exception as exc:
+            failures += 1
+            rows.append(("appendix_manifest", "fail", f"Could not parse manifest: {exc}"))
+    else:
+        failures += 1
+        rows.append(("appendix_manifest", "fail", f"Missing artifact: {manifest_path}"))
+
+    if canonical_results_path.exists():
+        try:
+            canonical_payload = json.loads(canonical_results_path.read_text(encoding="utf-8"))
+            canonical_errors = validate_canonical_results_payload(canonical_payload)
+            if canonical_errors:
+                failures += 1
+                rows.append(("appendix_results_json", "fail", "; ".join(canonical_errors)))
+            else:
+                rows.append(("appendix_results_json", "pass", str(canonical_results_path)))
+        except Exception as exc:
+            failures += 1
+            rows.append(("appendix_results_json", "fail", f"Could not parse payload: {exc}"))
+    else:
+        failures += 1
+        rows.append(("appendix_results_json", "fail", f"Missing artifact: {canonical_results_path}"))
+
+    for label, path in [
+        ("synthesis_summary", synthesis_summary_path),
+        ("synthesis_forest_ready", synthesis_forest_path),
+        ("synthesis_memo", synthesis_memo_path),
+    ]:
+        if path.exists():
+            rows.append((label, "pass", str(path)))
+        else:
+            failures += 1
+            rows.append((label, "fail", f"Missing artifact: {path}"))
+
+    if docs_results_path.exists():
+        try:
+            docs_payload = json.loads(docs_results_path.read_text(encoding="utf-8"))
+            docs_errors = validate_site_results_payload(docs_payload)
+            if docs_errors:
+                failures += 1
+                rows.append(("docs_results_json", "fail", "; ".join(docs_errors)))
+            else:
+                rows.append(("docs_results_json", "pass", str(docs_results_path)))
+        except Exception as exc:
+            failures += 1
+            rows.append(("docs_results_json", "fail", f"Could not parse payload: {exc}"))
+    else:
+        failures += 1
+        rows.append(("docs_results_json", "fail", f"Missing artifact: {docs_results_path}"))
+    return rows, failures
+
+
 @app.command("inspect-nlsy")
 def inspect_nlsy(
     config: Path | None = typer.Option(Path("config/user_inputs.local.yaml"), "--config"),
@@ -173,6 +282,25 @@ def inspect_nlsy(
             generated_at=datetime.now(timezone.utc),
         )
         console.print(f"[green]Wrote inventory reports to {report_paths['markdown']} and {report_paths['json']}.[/green]")
+
+
+@app.command("doctor")
+def doctor(
+    config: Path | None = typer.Option(Path("config/user_inputs.local.yaml"), "--config"),
+) -> None:
+    """Validate config resolution and public artifact readiness for the public-results path."""
+    rows, failures = _doctor_rows(config)
+    table = Table(title="dadgap doctor")
+    table.add_column("Check")
+    table.add_column("Status")
+    table.add_column("Detail")
+    for check, status, detail in rows:
+        table.add_row(check, status, detail)
+    console.print(table)
+    if failures:
+        console.print(f"[yellow]{failures} required check(s) failed.[/yellow]")
+        raise typer.Exit(code=1)
+    console.print("[green]All required checks passed.[/green]")
 
 
 @app.command("build-nlsy-pilot")
@@ -691,19 +819,49 @@ def build_results_appendix_command(
     """Materialize stable appendix tables and a frontend/doc handoff memo from existing outputs."""
     data = _load_optional_config(config)
     runtime_paths = resolve_runtime_paths(data)
-    result = build_results_appendix(outputs_root=runtime_paths["outputs_root"])
+    result = build_results_appendix(outputs_root=runtime_paths["outputs_root"], project_root=Path.cwd())
     table = Table(title="Results appendix artifacts")
     table.add_column("Artifact")
     table.add_column("Path")
     table.add_row("manifest_csv", str(result.manifest_path))
+    table.add_row("results_json", str(result.results_json_path))
     table.add_row("frontend_doc_handoff_md", str(result.handoff_path))
     table.add_row("results_synthesis_md", str(result.synthesis_path))
     table.add_row("nlsy_prevalence_table", str(result.nlsy_prevalence_table_path))
     table.add_row("nlsy_predictor_table", str(result.nlsy_predictor_table_path))
     table.add_row("nlsy_outcome_gap_table", str(result.nlsy_outcome_gap_table_path))
     table.add_row("nlsy_race_gap_table", str(result.nlsy_race_gap_table_path))
+    table.add_row("nlsy_cognitive_table", str(result.nlsy_cognitive_table_path))
+    table.add_row("nlsy_cognitive_subgroup_table", str(result.nlsy_cognitive_subgroup_table_path))
+    table.add_row("nlsy_near_term_effects_table", str(result.nlsy_near_term_effects_table_path))
+    table.add_row("nlsy_near_term_robustness_table", str(result.nlsy_near_term_robustness_table_path))
+    table.add_row("nlsy_health_table", str(result.nlsy_health_table_path))
+    table.add_row("nlsy_mental_health_table", str(result.nlsy_mental_health_table_path))
+    table.add_row("nlsy_family_formation_table", str(result.nlsy_family_formation_table_path))
+    table.add_row("nlsy_occupation_summary_table", str(result.nlsy_occupation_summary_table_path))
+    table.add_row("nlsy_occupation_effect_table", str(result.nlsy_occupation_effect_table_path))
+    table.add_row("nlsy_effect_heterogeneity_table", str(result.nlsy_effect_heterogeneity_table_path))
+    table.add_row("nlsy_group_residual_table", str(result.nlsy_group_residual_table_path))
     table.add_row("acs_child_context_table", str(result.acs_child_context_table_path))
     table.add_row("benchmark_context_table", str(result.benchmark_context_table_path))
+    console.print(table)
+
+
+@app.command("build-synthesis")
+def build_synthesis_command(
+    config: Path | None = typer.Option(Path("config/user_inputs.local.yaml"), "--config"),
+) -> None:
+    """Build cross-cohort synthesis artifacts from the existing appendix and benchmark outputs."""
+    data = _load_optional_config(config)
+    runtime_paths = resolve_runtime_paths(data)
+    result = build_synthesis(outputs_root=runtime_paths["outputs_root"], project_root=Path.cwd())
+    table = Table(title="Cross-cohort synthesis artifacts")
+    table.add_column("Artifact")
+    table.add_column("Path")
+    table.add_row("summary_csv", str(result.summary_path))
+    table.add_row("forest_ready_csv", str(result.forest_ready_path))
+    table.add_row("memo_md", str(result.memo_path))
+    table.add_row("site_payload_json", str(result.site_payload_path))
     console.print(table)
 
 

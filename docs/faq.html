@@ -6,6 +6,7 @@
   <meta name="color-scheme" content="light dark">
   <title>FAQ — dadgap</title>
   <script src="js/theme.js"></script>
+  <script src="js/results.js"></script>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -48,7 +49,7 @@
         How common is father absence?
       </button>
       <div class="faq-answer"><div class="faq-answer-inner">
-        <p>43.2% of respondents in the NLSY97 cohort (born 1980&ndash;84) experienced father absence by this definition. In ACS 2024 data on current children under 18, 25.6% lack a resident father. The difference reflects both cohort changes and measurement differences (retrospective full-childhood history vs current household snapshot).</p>
+        <p><span id="faqPrevalenceAnswer">Loading artifact summary...</span> The difference reflects both cohort changes and measurement differences (retrospective full-childhood history vs current household snapshot).</p>
       </div></div>
     </div>
 
@@ -58,7 +59,7 @@
         How big is the earnings gap?
       </button>
       <div class="faq-answer"><div class="faq-answer-inner">
-        <p>Father-present adults earn $70,784 on average versus $51,731 for father-absent adults&mdash;a $19,053 gap (NLSY97, 2021 earnings, ages 37&ndash;41). The gap varies by subgroup, ranging from $6,500 (Hispanic females) to $19,900 (non-Black non-Hispanic males).</p>
+        <p><span id="faqEarningsAnswer">Loading artifact summary...</span> The gap varies by subgroup across race and sex splits in the outcomes artifacts.</p>
       </div></div>
     </div>
 
@@ -88,7 +89,7 @@
         How does this compare to national data?
       </button>
       <div class="faq-answer"><div class="faq-answer-inner">
-        <p>NLSY97 mean earnings ($63,003) are higher than ACS ($55,894) and CPS ($53,341) estimates for similar ages. The NLSY97 is unweighted and cohort-specific; national surveys are weighted population estimates. See the <a href="methods.html">Methods</a> page for details on each data source.</p>
+        <p><span id="faqNationalAnswer">Loading artifact summary...</span> The NLSY97 is unweighted and cohort-specific; national surveys are weighted population estimates. See the <a href="methods.html">Methods</a> page for details on each data source.</p>
       </div></div>
     </div>
 
@@ -117,6 +118,30 @@
 </div>
 
 <footer class="site-footer"><div class="footer-inner"><span>dadgap &middot; MIT License</span><span>Data: NLSY97, ACS PUMS, CPS ASEC</span></div></footer>
+
+<script>
+(function () {
+  'use strict';
+
+  function setText(id, value) {
+    var element = document.getElementById(id);
+    if (element) {
+      element.textContent = value || 'Artifact summary unavailable.';
+    }
+  }
+
+  window.dgResults.load()
+    .then(function (payload) {
+      var data = window.dgResults.faq(payload);
+      setText('faqPrevalenceAnswer', data.prevalence_answer);
+      setText('faqEarningsAnswer', data.earnings_answer);
+      setText('faqNationalAnswer', data.national_answer);
+    })
+    .catch(function (error) {
+      window.dgResults.showError(error.message);
+    });
+})();
+</script>
 
 </body>
 </html>

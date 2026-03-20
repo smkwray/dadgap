@@ -1,0 +1,83 @@
+name: smoke
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install package
+        run: python -m pip install -e ".[dev,analysis]"
+
+      - name: Run tests
+        run: pytest -q
+
+      - name: Prepare doctor smoke fixture
+        run: |
+          mkdir -p ci-smoke/outputs/manifests ci-smoke/docs ci-smoke/nlsy ci-smoke/add_health
+          ROOT="$PWD/ci-smoke"
+          cat <<EOF > ci-smoke/config.yaml
+          paths:
+            outputs_root: ${ROOT}/outputs
+          nlsy:
+            fallback_interim_root: ${ROOT}/nlsy
+          add_health:
+            add_health_dir: ${ROOT}/add_health
+          EOF
+          cat <<'EOF' > ci-smoke/outputs/manifests/results_appendix_manifest.csv
+          artifact,path,purpose
+          EOF
+          cat <<'EOF' > ci-smoke/outputs/manifests/results.json
+          {
+            "schema_version": "1.0",
+            "generated_at_utc": "2026-03-20T00:00:00Z",
+            "source_manifest": "results_appendix_manifest.csv",
+            "synthesis_artifacts": ["outputs/manifests/cross_cohort_synthesis.md"],
+            "artifacts": []
+          }
+          EOF
+          cat <<'EOF' > ci-smoke/outputs/manifests/cross_cohort_synthesis_summary.csv
+          artifact
+          EOF
+          cat <<'EOF' > ci-smoke/outputs/manifests/cross_cohort_synthesis_forest_ready.csv
+          artifact
+          EOF
+          cat <<'EOF' > ci-smoke/outputs/manifests/cross_cohort_synthesis.md
+          # memo
+          EOF
+          cat <<'EOF' > ci-smoke/docs/results.json
+          {
+            "schema_version": "1.0",
+            "site_payload_version": "1.0",
+            "generated_at_utc": "2026-03-20T00:00:00Z",
+            "source_manifest": "outputs/manifests/results.json",
+            "synthesis_artifacts": [
+              "outputs/manifests/cross_cohort_synthesis_summary.csv",
+              "outputs/manifests/cross_cohort_synthesis_forest_ready.csv",
+              "outputs/manifests/cross_cohort_synthesis.md"
+            ],
+            "artifacts": [],
+            "pages": {"home": {}, "prevalence": {}, "outcomes": {}, "faq": {}},
+            "tables": {},
+            "memos": {}
+          }
+          EOF
+
+      - name: Doctor smoke check
+        working-directory: ci-smoke
+        run: python -m father_longrun doctor --config config.yaml
+
+      - name: CLI help smoke check
+        run: python -m father_longrun --help

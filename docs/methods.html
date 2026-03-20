@@ -6,6 +6,7 @@
   <meta name="color-scheme" content="light dark">
   <title>Methods — dadgap</title>
   <script src="js/theme.js"></script>
+  <script src="js/results.js"></script>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -49,6 +50,8 @@
     <div class="section-header">
       <h2>Data Sources</h2>
     </div>
+
+    <p>The current public package combines cohort-specific intake and analysis modules with a smaller shared harmonization helper layer for benchmark labels, poverty bands, and standardized public-profile outputs. It is not yet a single fully generalized person-level harmonization system across all cohorts.</p>
 
     <table class="data-table">
       <thead>
@@ -119,22 +122,22 @@
         <tr>
           <td>Descriptive</td>
           <td>Survey-weighted means, group contrasts</td>
-          <td>Complete</td>
+          <td>Implemented for current public artifacts</td>
         </tr>
         <tr>
           <td>Adjusted association</td>
           <td>OLS/GLM with pre-exposure covariates</td>
-          <td>Complete</td>
+          <td>Implemented for current public artifacts</td>
         </tr>
         <tr>
           <td>Quasi-causal</td>
           <td>Event-time post-only, sibling FE, IPW</td>
-          <td>Event-time complete; sibling FE insufficient</td>
+          <td>Event-time scaffold implemented; broader quasi-causal stack remains partial</td>
         </tr>
         <tr>
           <td>Exploratory ML</td>
           <td>Elastic net, random forest, feature importance</td>
-          <td>Complete</td>
+          <td>Available as an optional extension layer</td>
         </tr>
       </tbody>
     </table>
@@ -167,21 +170,61 @@
     </div>
 
     <div class="warning-box">
-      <p>These limitations should be considered when interpreting any results from this analysis.</p>
+      <p>These limitations should be considered when interpreting any results from this analysis and the current state of the shared pipeline modules.</p>
     </div>
 
     <ul>
       <li>NLSY97 is unweighted; cohort-specific (born 1980&ndash;84).</li>
       <li>Father absence is association, not proven causal.</li>
       <li>ACS uses ESP-based proxy (current household), not full childhood history.</li>
+      <li>The shared `harmonize.py` layer currently covers benchmark/profile standardization, not end-to-end person-level harmonization across every cohort.</li>
       <li>Sibling FE design lacks sufficient within-family variation.</li>
       <li>Single-jurisdiction parole data for event-time design.</li>
     </ul>
   </section>
 
+  <section class="section">
+    <div class="section-header">
+      <h2>Artifact Provenance</h2>
+    </div>
+
+    <div class="card">
+      <p>The public site is generated from committed appendix and synthesis artifacts plus the derived <code>docs/results.json</code> payload.</p>
+      <p><strong>Generated:</strong> <span id="methodsGeneratedAt">Loading...</span></p>
+      <p><strong>Source manifest:</strong> <span id="methodsSourceManifest">Loading...</span></p>
+      <p>
+        <a href="results.json" class="card-link">docs/results.json</a>
+        <a href="../outputs/manifests/results.json" class="card-link">canonical results.json</a>
+        <a href="../outputs/manifests/cross_cohort_synthesis_summary.csv" class="card-link">cross-cohort summary CSV</a>
+        <a href="../outputs/manifests/cross_cohort_synthesis_forest_ready.csv" class="card-link">forest-ready CSV</a>
+      </p>
+    </div>
+  </section>
+
 </div>
 
 <footer class="site-footer"><div class="footer-inner"><span>dadgap &middot; MIT License</span><span>Data: NLSY97, ACS PUMS, CPS ASEC</span></div></footer>
+
+<script>
+(function () {
+  'use strict';
+
+  function setText(id, value) {
+    var element = document.getElementById(id);
+    if (element) {
+      element.textContent = value || 'unavailable';
+    }
+  }
+
+  window.dgResults.load()
+    .then(function (payload) {
+      var provenance = window.dgResults.provenance(payload);
+      setText('methodsGeneratedAt', provenance.generated_at_utc);
+      setText('methodsSourceManifest', provenance.source_manifest);
+    })
+    .catch(function () {});
+})();
+</script>
 
 </body>
 </html>
