@@ -41,3 +41,4 @@ PLAN.md
 docs/*.md
 docs/datasets/
 .claude/
+.private-denylist
