@@ -23,7 +23,7 @@ The site also reports subgroup splits by race, sex, and parent education, a logi
 
 ## Method
 
-Father absence is coded from household roster and family-structure items into eight categories: always-resident father, absent from birth, exit at ages 0–5, 6–11, or 12–17, repeated transitions, father deceased, and other or unknown. Results compare father-present and father-absent groups, with covariate-adjusted gaps where noted. [METHODS.md](METHODS.md) describes the exposure coding, outcomes, and model design.
+Father absence is coded from household roster and family-structure items into eight categories: always-resident father, absent from birth, exit at ages 0–5, 6–11, or 12–17, repeated transitions, father deceased, and other or unknown. Results compare father-present and father-absent groups, with covariate-adjusted gaps where noted. The site's [methods page](https://smkwray.github.io/dadgap/methods.html) describes the exposure coding, outcomes, and covariates.
 
 ## Data sources
 

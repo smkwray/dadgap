@@ -31,7 +31,7 @@ Current Population Survey Annual Social and Economic Supplement. Provides offici
 
 ### SIPP
 
-Survey of Income and Program Participation. Used for short-run household dynamics, income transitions, transfer receipt, and maternal labor-supply context.
+Survey of Income and Program Participation. Used for the monthly earnings benchmark.
 
 - Access: [Census Bureau](https://www.census.gov/programs-surveys/sipp.html)
 - Note: SIPP reports monthly earnings; not directly comparable to annual measures from NLSY97 or CPS

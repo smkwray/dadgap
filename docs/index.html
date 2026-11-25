@@ -133,14 +133,11 @@
       <h2>Provenance &amp; Downloads</h2>
     </div>
     <div class="card">
-      <p>This site is built from committed appendix and synthesis artifacts plus the derived <code>docs/results.json</code> payload.</p>
+      <p>The site reads its numbers from <code>docs/results.json</code>, which <code>make public-results</code> derives from the pipeline's appendix and synthesis outputs. Those outputs are written to <code>outputs/</code> and are not committed.</p>
       <p><strong>Generated:</strong> <span id="provenanceGeneratedAt">Loading...</span></p>
       <p><strong>Source manifest:</strong> <span id="provenanceSourceManifest">Loading...</span></p>
       <p>
         <a href="results.json" class="card-link">docs/results.json</a>
-        <a href="../outputs/manifests/results.json" class="card-link">canonical results.json</a>
-        <a href="../outputs/manifests/cross_cohort_synthesis_summary.csv" class="card-link">cross-cohort summary CSV</a>
-        <a href="../outputs/manifests/cross_cohort_synthesis_forest_ready.csv" class="card-link">forest-ready CSV</a>
       </p>
     </div>
   </section>

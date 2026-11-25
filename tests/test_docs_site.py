@@ -31,6 +31,11 @@ def test_docs_pages_expose_provenance_and_download_links() -> None:
     assert "Provenance &amp; Downloads" in index_html
     assert "Artifact Provenance" in methods_html
     assert 'href="results.json"' in index_html
-    assert 'href="../outputs/manifests/results.json"' in index_html
-    assert 'href="../outputs/manifests/cross_cohort_synthesis_summary.csv"' in methods_html
-    assert 'href="../outputs/manifests/cross_cohort_synthesis_forest_ready.csv"' in methods_html
+    assert 'href="results.json"' in methods_html
+
+
+def test_docs_pages_link_only_files_the_site_serves() -> None:
+    # Pages publishes docs/ only, and outputs/ is not committed, so links there are dead.
+    root = Path(__file__).resolve().parents[1]
+    for page in sorted((root / "docs").glob("*.html")):
+        assert "../outputs/" not in page.read_text(encoding="utf-8"), page.name
