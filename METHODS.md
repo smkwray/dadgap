@@ -2,16 +2,20 @@
 
 ## Research design
 
-This project estimates the association between childhood resident biological father absence (birth to age 17) and adult economic outcomes using a multi-cohort public-data design. Each cohort is analyzed separately with harmonized variable definitions, then synthesized across cohorts.
+This project estimates the association between childhood resident biological father absence (birth to age 17) and adult economic outcomes using a multi-cohort public-data design. Each cohort is analyzed separately with harmonized variable definitions, then compared across cohorts.
+
+Published results come from one cohort, NLSY97, set against cross-sectional benchmarks from the ACS, CPS ASEC, and SIPP. The pipeline also has code for NLSY79, PSID, Add Health, and FFCWS, but none of them has published results (see [DATA.md](DATA.md)).
 
 ## Identification hierarchy
 
-Results are organized into four tiers, labeled explicitly in every output table:
+Analyses are organized into four tiers:
 
 1. **Descriptive** — survey-weighted means and group contrasts
 2. **Adjusted association** — OLS/GLM with pre-exposure covariates
 3. **Quasi-causal** — sibling fixed effects, event-time models, inverse-probability weighting, doubly robust estimation
 4. **Exploratory ML** — Double ML, causal forests, predictive benchmarks
+
+Published results use the first two tiers only: descriptive contrasts and covariate-adjusted gaps in NLSY97, plus a descriptive model of who experiences father absence. The published NLSY97 estimates are unweighted. The quasi-causal and machine-learning modules are in the code, but their output is not published.
 
 Each tier builds on the prior. Descriptive results establish baseline patterns. Adjusted models add pre-exposure controls. Quasi-causal designs exploit within-family variation or timing of father exit. ML models explore heterogeneity after the identification logic is established.
 
@@ -112,6 +116,8 @@ Cohorts are not concatenated into a single file. Instead:
 2. Standardized outcome scales or comparable estimands are produced
 3. Estimates are meta-analyzed or partially pooled
 4. Results note where findings replicate and where they are cohort-specific
+
+With one published cohort, the current synthesis step combines the NLSY97 estimates with the ACS, CPS ASEC, and SIPP benchmarks into summary and forest-ready tables. No cross-cohort meta-analysis is published.
 
 ## Reproducibility
 
